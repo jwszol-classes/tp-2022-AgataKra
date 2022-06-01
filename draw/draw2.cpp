@@ -15,8 +15,9 @@ TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 const int Platform_Length = 250;
 const int Platform_Height = 3;
-const int Elevator_Length = 200;
+const int Shaft_Length = 200;
 const int Elevator_Height = 100;
+const int Elevator_Length = 180;
 const int Number_Of_Floors = 5;
 const int E_Endings = 50;
 //creating my base structures here:
@@ -77,13 +78,15 @@ void MyOnPaint(HDC hdc)
 
 	for (int i = 1; i <= Number_Of_Floors; i++) {
 
-		if (i % 2 == 0)
+		if (i % 2 == 0) //Left Side of the elevator
 			for (int j = 1; j < Platform_Height + 1; j++) {
 				graphics.DrawLine(&pen, E_Endings, (i * Elevator_Height + E_Endings) - 1 + j, Platform_Length + E_Endings, (i * Elevator_Height + E_Endings) - 1 + j);
+
 			}
 		else
 			for (int j = 1; j < Platform_Height + 1; j++) {
-				graphics.DrawLine(&pen, Platform_Length + Elevator_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Elevator_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
+				graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
+
 			}
 
 	}
