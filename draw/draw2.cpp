@@ -13,6 +13,35 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+//creating my base structures here:
+
+enum Directions {UP, DOWN, NONE};				//NONE is for when it doesnt have passengers and waits for new ones
+enum DoorState {OPEN, OPENING, CLOSING, CLOSED};					
+enum Position {FLOOR0, FLOOR1, FLOOR2, FLOOR3, FLOOR4, ELEVATOR, TRANSIT};	//ELEVATOR is just for people
+
+struct Person {
+	Position person_position;
+	Position destination;
+	Directions destination_direction;
+	int person_weight = 70;
+};
+
+struct Elevator {
+	std::vector<Person>passengers;
+	Directions direction = UP;
+	int weight_limit = 600;
+	int current_weight = 0;
+	DoorState door = CLOSED;
+	Position elevator_position = FLOOR0;
+};
+
+int test = 0;
+
+std::vector<Person>floor0_people;
+std::vector<Person>floor1_people;
+std::vector<Person>floor2_people;
+std::vector<Person>floor3_people;
+std::vector<Person>floor4_people;
 
 INT value;
 
@@ -22,8 +51,9 @@ HWND hwndButton;
 // sent data
 int col = 0;
 //std::vector<Point> data;
-RECT drawArea1 = { 0, 0, 150, 200 };
+RECT drawArea1 = { 0, 0, 150, 800 };
 RECT drawArea2 = { 50, 400, 650, 422};
+RECT Elevator_Shaft = { 0, 0, 150, 800 };				//elevator animation area
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -39,31 +69,23 @@ void MyOnPaint(HDC hdc)
 	Pen pen(Color(255, 0, 0, 255));
 	Pen pen2(Color(255, 25*col, 0, 255));
 
-	/*for (int i = 1; i < 100; i++)
-		graphics.DrawLine(&pen2, data[i - 1].X, data[i - 1].Y, data[i].X, data[i].Y);
-
-	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20);*/
+	for (int i = 1; i < 100; i++)
+		graphics.DrawLine(&pen2, 0, 0, 50, test);
+	test += 10;
+	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20);
 }
 
+//for now repaintwindow just has a test animation TO DO:
 void repaintWindow(HWND hWnd, HDC &hdc, PAINTSTRUCT &ps, RECT *drawArea)
 {
-	if (drawArea==NULL)
+	/*if (drawArea == NULL)
 		InvalidateRect(hWnd, NULL, TRUE); // repaint all
-	else
+	else*/
 		InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
 	hdc = BeginPaint(hWnd, &ps);
 	MyOnPaint(hdc);
 	EndPaint(hWnd, &ps);
 }
-
-/*void inputData()
-{	
-	data.push_back(Point(0, 0));
-	for (int i = 1; i < 100; i++){
-		data.push_back(Point(2*i+1, 200 * rand()/RAND_MAX));
-	}
-}*/
-
 
 int OnCreate(HWND window)
 {
@@ -178,7 +200,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
 
-	// create button and store the handle                                                       
+	// create button and store the handle          
 	
 	hwndButton = CreateWindow(TEXT("button"),                      // The class name required is button
 		TEXT("Draw"),                  // the caption of the button
@@ -202,13 +224,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	// create button and store the handle                                                       
 
-	hwndButton = CreateWindow(TEXT("button"), TEXT("Timer ON"),
+	/*hwndButton = CreateWindow(TEXT("button"), TEXT("Timer ON"),
 		WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
 		300, 155, 100, 30, hWnd, (HMENU)ID_RBUTTON1, GetModuleHandle(NULL), NULL);
 
 	hwndButton = CreateWindow(TEXT("button"), TEXT("Timer OFF"),
 		WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-		300, 200, 100, 30, hWnd, (HMENU)ID_RBUTTON2, GetModuleHandle(NULL), NULL);
+		300, 200, 100, 30, hWnd, (HMENU)ID_RBUTTON2, GetModuleHandle(NULL), NULL);*/
 
 	OnCreate(hWnd);
 
@@ -241,6 +263,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_CREATE:
+		SetTimer(hWnd, TMR_1, 25, 0);									//timer for animation is set up here, 25ms per frame
+		break;
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
@@ -264,12 +289,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BUTTON2 :
 			repaintWindow(hWnd, hdc, ps, NULL);
 			break;
-		case ID_RBUTTON1:
-			SetTimer(hWnd, TMR_1, 25, 0);
-			break;
-		case ID_RBUTTON2:
-			KillTimer(hWnd, TMR_1);
-			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
@@ -283,13 +302,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 
-	case WM_TIMER:
+	case WM_TIMER:					//change the timer redrawing
 		switch (wParam)
 		{
 		case TMR_1:
 			//force window to repaint
-			repaintWindow(hWnd, hdc, ps, &drawArea2);
-			value++;
+			repaintWindow(hWnd, hdc, ps, &Elevator_Shaft);
 			break;
 		}
 
