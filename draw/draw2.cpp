@@ -13,6 +13,12 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+const int Platform_Length = 250;
+const int Platform_Height = 3;
+const int Elevator_Length = 200;
+const int Elevator_Height = 100;
+const int Number_Of_Floors = 5;
+const int E_Endings = 50;
 //creating my base structures here:
 
 enum Directions {UP, DOWN, NONE};				//NONE is for when it doesnt have passengers and waits for new ones
@@ -51,9 +57,9 @@ HWND hwndButton;
 // sent data
 int col = 0;
 //std::vector<Point> data;
-RECT drawArea1 = { 0, 0, 150, 800 };
-RECT drawArea2 = { 50, 400, 650, 422};
-RECT Elevator_Shaft = { 0, 0, 150, 800 };				//elevator animation area
+RECT drawArea1 = { 0, 0, 300, 300 };
+RECT drawArea2 = { 50, 400, 1500, 1500};
+RECT Elevator_Shaft = { 0, 0, 800, 800 };				//elevator animation area
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -69,10 +75,22 @@ void MyOnPaint(HDC hdc)
 	Pen pen(Color(255, 0, 0, 255));
 	Pen pen2(Color(255, 25*col, 0, 255));
 
-	for (int i = 1; i < 100; i++)
+	for (int i = 1; i <= Number_Of_Floors; i++) {
+
+		if (i % 2 == 0)
+			for (int j = 1; j < Platform_Height + 1; j++) {
+				graphics.DrawLine(&pen, E_Endings, (i * Elevator_Height + E_Endings) - 1 + j, Platform_Length + E_Endings, (i * Elevator_Height + E_Endings) - 1 + j);
+			}
+		else
+			for (int j = 1; j < Platform_Height + 1; j++) {
+				graphics.DrawLine(&pen, Platform_Length + Elevator_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Elevator_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
+			}
+
+	}
+	/*for (int i = 1; i < 50; i++)
 		graphics.DrawLine(&pen2, 0, 0, 50, test);
 	test += 10;
-	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20);
+	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20); */
 }
 
 //for now repaintwindow just has a test animation TO DO:
@@ -205,7 +223,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),                      // The class name required is button
 		TEXT("Draw"),                  // the caption of the button
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,  // the styles
-		300, 60,                                  // the left and top co-ordinates
+		800, 60,                                  // the left and top co-ordinates
 		80, 50,                              // width and height
 		hWnd,                                 // parent window handle
 		(HMENU)ID_BUTTON1,                   // the ID of your button
@@ -215,7 +233,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),                      // The class name required is button
 		TEXT("DrawAll"),                  // the caption of the button
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,  // the styles
-		300, 0,                                  // the left and top co-ordinates
+		800, 0,                                  // the left and top co-ordinates
 		80, 50,                              // width and height
 		hWnd,                                 // parent window handle
 		(HMENU)ID_BUTTON2,                   // the ID of your button
