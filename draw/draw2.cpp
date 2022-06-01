@@ -53,7 +53,7 @@ int col = 0;
 //std::vector<Point> data;
 RECT drawArea1 = { 0, 0, 150, 800 };
 RECT drawArea2 = { 50, 400, 650, 422};
-RECT Elevator_Shaft = { 0, 0, 150, 800 };				//elevator animation area
+RECT Elevator_Shaft = { 0, 0, 220, 800 };				//elevator animation area
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -66,13 +66,9 @@ INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
 void MyOnPaint(HDC hdc)
 {
 	Graphics graphics(hdc);
-	Pen pen(Color(255, 0, 0, 255));
-	Pen pen2(Color(255, 25*col, 0, 255));
-
-	for (int i = 1; i < 100; i++)
-		graphics.DrawLine(&pen2, 0, 0, 50, test);
-	test += 10;
-	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20);
+	Pen pen(Color(255, 0, 0, 255), 2);
+	graphics.DrawRectangle(&pen, 10, 600 - test, 200, 100);
+	test += 2;
 }
 
 //for now repaintwindow just has a test animation TO DO:
