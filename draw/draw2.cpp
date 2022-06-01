@@ -13,6 +13,33 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+//creating my base structures here:
+
+enum Directions {UP, DOWN, NONE};				//NONE is for when it doesnt have passengers and waits for new ones
+enum DoorState {OPEN, OPENING, CLOSING, CLOSED};					
+enum Position {FLOOR0, FLOOR1, FLOOR2, FLOOR3, FLOOR4, ELEVATOR, TRANSIT};	//ELEVATOR is just for people
+
+struct Person {
+	Position person_position;
+	Position destination;
+	Directions destination_direction;
+	int person_weight = 70;
+};
+
+struct Elevator {
+	std::vector<Person>passengers;
+	Directions direction = UP;
+	int weight_limit = 600;
+	int current_weight = 0;
+	DoorState door = CLOSED;
+	Position elevator_position = FLOOR0;
+};
+
+std::vector<Person>floor0_people;
+std::vector<Person>floor1_people;
+std::vector<Person>floor2_people;
+std::vector<Person>floor3_people;
+std::vector<Person>floor4_people;
 
 INT value;
 
