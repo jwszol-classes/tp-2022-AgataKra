@@ -1,5 +1,6 @@
 // draw.cpp : Defines the entry point for the application.
-//
+// Did Visual Studio Break?
+//     y/n
 
 #include "stdafx.h"
 #include "draw2.h"
