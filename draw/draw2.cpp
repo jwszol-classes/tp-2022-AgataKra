@@ -1,6 +1,5 @@
 // draw.cpp : Defines the entry point for the application.
-// Did Visual Studio Break?
-//     y/n
+//
 
 #include "stdafx.h"
 #include "draw2.h"
@@ -77,18 +76,35 @@ void MyOnPaint(HDC hdc)
 	Pen pen(Color(255, 0, 0, 255));
 	Pen pen2(Color(255, 25*col, 0, 255));
 
-	for (int i = 1; i <= Number_Of_Floors; i++) {
+	for (int i = 0; i <= Number_Of_Floors; i++) {
 
 		if (i % 2 == 0) //Left Side of the elevator
-			for (int j = 1; j < Platform_Height + 1; j++) {
-				graphics.DrawLine(&pen, E_Endings, (i * Elevator_Height + E_Endings) - 1 + j, Platform_Length + E_Endings, (i * Elevator_Height + E_Endings) - 1 + j);
-
+			if (i == 0) {
+				for (int j = 1; j < Platform_Height + 1; j++) {
+					graphics.DrawLine(&pen, Platform_Length + E_Endings - 2 + j, E_Endings / 2, Platform_Length + E_Endings - 2 + j, Elevator_Height + E_Endings);
+					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings - 1 + j, (E_Endings / 2), Platform_Length + Shaft_Length + E_Endings - 1 + j, E_Endings);
+					graphics.DrawLine(&pen, Platform_Length + E_Endings, (E_Endings / 2) - 1 + j, Platform_Length + Shaft_Length + E_Endings, (E_Endings / 2) - 1 + j);
+				}
+			}
+			else {
+				for (int j = 1; j < Platform_Height + 1; j++) {
+					graphics.DrawLine(&pen, E_Endings, (i * Elevator_Height + E_Endings) - 1 + j, Platform_Length + E_Endings, (i * Elevator_Height + E_Endings) - 1 + j);
+					graphics.DrawLine(&pen, Platform_Length + E_Endings - 2 + j, (i * Elevator_Height + E_Endings), Platform_Length + E_Endings - 2 + j, ((i + 1) * Elevator_Height + E_Endings));
+				}
 			}
 		else
-			for (int j = 1; j < Platform_Height + 1; j++) {
+			if (i == 5)
+				for (int j = 1; j < Platform_Height + 1; j++) {
+					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
+					graphics.DrawLine(&pen, Platform_Length + E_Endings - 2 + j, i * Elevator_Height + E_Endings, Platform_Length + E_Endings - 2 + j, i * Elevator_Height + 2 * E_Endings);
+					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings - 1 + j, (i * Elevator_Height + E_Endings) + j, Platform_Length + Shaft_Length + E_Endings - 1 + j, (i * Elevator_Height + 2 * E_Endings) + j);
+					graphics.DrawLine(&pen, Platform_Length + E_Endings, (i * Elevator_Height + 2 * E_Endings) - 1 + j, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + 2 * E_Endings) - 1 + j);
+				}
+			else
+				for (int j = 1; j < Platform_Height + 1; j++) {
 				graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
-
-			}
+				graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings + 2 - j, (i * Elevator_Height + E_Endings) + 1, Platform_Length + Shaft_Length + E_Endings + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
+				}
 
 	}
 	/*for (int i = 1; i < 50; i++)
