@@ -341,54 +341,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		hInstance,
 		NULL);
 
-	//floor 3 buttons
-
-	hwndButton = CreateWindow(TEXT("button"),
-		TEXT("1"),
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height + 4 * Button,
-		Button, Button,
-		hWnd,
-		(HMENU)ID_BUTTON3_1,
-		hInstance,
-		NULL);
-
-	hwndButton = CreateWindow(TEXT("button"),
-		TEXT("2"),
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height + 3 * Button,
-		Button, Button, 
-		hWnd,
-		(HMENU)ID_BUTTON3_2,
-		hInstance,
-		NULL);
-
-	hwndButton = CreateWindow(TEXT("button"),
-		TEXT("4"),
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height + Button,
-		Button, Button,
-		hWnd,
-		(HMENU)ID_BUTTON3_4,
-		hInstance,
-		NULL);
-
-	hwndButton = CreateWindow(TEXT("button"),
-		TEXT("5"),
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height,
-		Button, Button,
-		hWnd,
-		(HMENU)ID_BUTTON3_5,
-		hInstance,
-		NULL);
-
 	//floor 2 buttons
 
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("1"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 4 * Button,
+		Button, 3 * Elevator_Height + 4 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON2_1,
@@ -398,8 +356,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("3"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 3 * Button,
-		Button, Button,
+		Button, 3 * Elevator_Height + 2 * Button,
+		Button, Button, 
 		hWnd,
 		(HMENU)ID_BUTTON2_3,
 		hInstance,
@@ -408,7 +366,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("4"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 2 * Button,
+		Button, 3 * Elevator_Height + Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON2_4,
@@ -418,10 +376,52 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("5"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height,
+		Button, 3 * Elevator_Height,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON2_5,
+		hInstance,
+		NULL);
+
+	//floor 3 buttons
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("1"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 4 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON3_1,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("2"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 3 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON3_2,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("4"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON3_4,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("5"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON3_5,
 		hInstance,
 		NULL);
 
