@@ -25,7 +25,7 @@ const int Button = 25;
 
 enum Directions {UP, DOWN, NONE};				//NONE is for when it doesnt have passengers and waits for new ones
 enum DoorState {OPEN, OPENING, CLOSING, CLOSED};					
-enum Position {FLOOR0, FLOOR1, FLOOR2, FLOOR3, FLOOR4, ELEVATOR, TRANSIT};	//ELEVATOR is just for people
+enum Position {FLOOR1, FLOOR2, FLOOR3, FLOOR4, FLOOR5, ELEVATOR, TRANSIT};	//ELEVATOR is just for people
 
 struct Person {
 	Position person_position;
@@ -40,16 +40,16 @@ struct Elevator {
 	int weight_limit = 600;
 	int current_weight = 0;
 	DoorState door = CLOSED;
-	Position elevator_position = FLOOR0;
+	Position elevator_position = FLOOR1;
 };
 
 int test = 0;
 
-std::vector<Person>floor0_people;
 std::vector<Person>floor1_people;
 std::vector<Person>floor2_people;
 std::vector<Person>floor3_people;
 std::vector<Person>floor4_people;
+std::vector<Person>floor5_people;
 
 INT value;
 
@@ -505,6 +505,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
+	Person traveller;
 
 	switch (message)
 	{
@@ -526,13 +527,128 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DestroyWindow(hWnd);
 			break;
 		case ID_BUTTON1_2 :
-			col++;
-			if (col > 10)
-				col = 0;
-			repaintWindow(hWnd, hdc, ps, &Elevator_Shaft);
+			traveller.person_position = FLOOR1;
+			traveller.destination = FLOOR2;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
 			break;
 		case ID_BUTTON1_3 :
-			repaintWindow(hWnd, hdc, ps, NULL);
+			traveller.person_position = FLOOR1;
+			traveller.destination = FLOOR3;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON1_4:
+			traveller.person_position = FLOOR1;
+			traveller.destination = FLOOR4;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON1_5:
+			traveller.person_position = FLOOR1;
+			traveller.destination = FLOOR5;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+
+		case ID_BUTTON2_1:
+			traveller.person_position = FLOOR2;
+			traveller.destination = FLOOR1;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON2_3:
+			traveller.person_position = FLOOR2;
+			traveller.destination = FLOOR3;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON2_4:
+			traveller.person_position = FLOOR2;
+			traveller.destination = FLOOR4;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON2_5:
+			traveller.person_position = FLOOR2;
+			traveller.destination = FLOOR5;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+
+		case ID_BUTTON3_1:
+			traveller.person_position = FLOOR3;
+			traveller.destination = FLOOR1;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON3_2:
+			traveller.person_position = FLOOR3;
+			traveller.destination = FLOOR2;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON3_4:
+			traveller.person_position = FLOOR3;
+			traveller.destination = FLOOR4;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON3_5:;
+			traveller.person_position = FLOOR3;
+			traveller.destination = FLOOR5;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+
+		case ID_BUTTON4_1:
+			traveller.person_position = FLOOR4;
+			traveller.destination = FLOOR1;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON4_2:
+			traveller.person_position = FLOOR4;
+			traveller.destination = FLOOR2;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON4_3:
+			traveller.person_position = FLOOR4;
+			traveller.destination = FLOOR3;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON4_5:
+			traveller.person_position = FLOOR4;
+			traveller.destination = FLOOR5;
+			traveller.destination_direction = UP;
+			floor1_people.push_back(traveller);
+			break;
+
+		case ID_BUTTON5_1:
+			traveller.person_position = FLOOR5;
+			traveller.destination = FLOOR1;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON5_2:
+			traveller.person_position = FLOOR5;
+			traveller.destination = FLOOR2;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON5_3:
+			traveller.person_position = FLOOR5;
+			traveller.destination = FLOOR3;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
+			break;
+		case ID_BUTTON5_4:
+			traveller.person_position = FLOOR5;
+			traveller.destination = FLOOR4;
+			traveller.destination_direction = DOWN;
+			floor1_people.push_back(traveller);
 			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
