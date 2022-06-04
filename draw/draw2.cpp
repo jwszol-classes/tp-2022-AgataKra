@@ -20,6 +20,7 @@ const int Elevator_Height = 100;
 const int Elevator_Length = 180;
 const int Number_Of_Floors = 5;
 const int E_Endings = 50;
+const int Button = 25;
 //creating my base structures here:
 
 enum Directions {UP, DOWN, NONE};				//NONE is for when it doesnt have passengers and waits for new ones
@@ -58,9 +59,12 @@ HWND hwndButton;
 // sent data
 int col = 0;
 //std::vector<Point> data;
-RECT drawArea1 = { 0, 0, 300, 300 };
-RECT drawArea2 = { 50, 400, 1500, 1500};
-RECT Elevator_Shaft = { 0, 0, 800, 800 };				//elevator animation area
+
+//Fit the elevator in the Elevator_Shaft, we'd have to employ some additional drawing areas to have the "shell" walls also open
+//it's an option but for now I'd say is not essential
+
+RECT StaticDrawArea = { 0, 0, 1500, 1500};
+RECT Elevator_Shaft = { E_Endings + Platform_Length + 2, E_Endings, E_Endings + Platform_Length + Elevator_Length + 19, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -72,9 +76,37 @@ INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
 
 void MyOnPaint(HDC hdc)
 {
+	Graphics graphics(hdc);	
+	Pen pen(Color(255, 0, 0, 255));	
+	Pen pen2(Color(255, 25*col, 0, 255));
+
+	
+	/*for (int i = 1; i < 50; i++)
+		graphics.DrawLine(&pen2, 0, 0, 50, test);
+	test += 10;
+	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20); */
+}
+
+//for now repaintwindow just has a test animation TO DO:
+void repaintWindow(HWND hWnd, HDC &hdc, PAINTSTRUCT &ps, RECT *drawArea)
+{
+	/*if (drawArea == NULL)
+		InvalidateRect(hWnd, NULL, TRUE); // repaint all
+	else*/
+		InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
+	hdc = BeginPaint(hWnd, &ps);
+	MyOnPaint(hdc);
+	EndPaint(hWnd, &ps);
+}
+
+void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
+{
+	InvalidateRect(hWnd, drawArea, TRUE);
+	hdc = BeginPaint(hWnd, &ps);
+
 	Graphics graphics(hdc);
 	Pen pen(Color(255, 0, 0, 255));
-	Pen pen2(Color(255, 25*col, 0, 255));
+	Pen pen2(Color(255, 25 * col, 0, 255));
 
 	for (int i = 0; i <= Number_Of_Floors; i++) {
 
@@ -102,26 +134,11 @@ void MyOnPaint(HDC hdc)
 				}
 			else
 				for (int j = 1; j < Platform_Height + 1; j++) {
-				graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
-				graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings + 2 - j, (i * Elevator_Height + E_Endings) + 1, Platform_Length + Shaft_Length + E_Endings + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
+					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
+					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings + 2 - j, (i * Elevator_Height + E_Endings) + 1, Platform_Length + Shaft_Length + E_Endings + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
 				}
 
 	}
-	/*for (int i = 1; i < 50; i++)
-		graphics.DrawLine(&pen2, 0, 0, 50, test);
-	test += 10;
-	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20); */
-}
-
-//for now repaintwindow just has a test animation TO DO:
-void repaintWindow(HWND hWnd, HDC &hdc, PAINTSTRUCT &ps, RECT *drawArea)
-{
-	/*if (drawArea == NULL)
-		InvalidateRect(hWnd, NULL, TRUE); // repaint all
-	else*/
-		InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
-	hdc = BeginPaint(hWnd, &ps);
-	MyOnPaint(hdc);
 	EndPaint(hWnd, &ps);
 }
 
@@ -238,27 +255,217 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
 
-	// create button and store the handle          
-	
-	hwndButton = CreateWindow(TEXT("button"),                      // The class name required is button
-		TEXT("Draw"),                  // the caption of the button
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,  // the styles
-		800, 60,                                  // the left and top co-ordinates
-		80, 50,                              // width and height
-		hWnd,                                 // parent window handle
-		(HMENU)ID_BUTTON1,                   // the ID of your button
-		hInstance,                            // the instance of your application
-		NULL);                               // extra bits you dont really need
+	// create button and store the handle   
 
-	hwndButton = CreateWindow(TEXT("button"),                      // The class name required is button
-		TEXT("DrawAll"),                  // the caption of the button
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,  // the styles
-		800, 0,                                  // the left and top co-ordinates
-		80, 50,                              // width and height
-		hWnd,                                 // parent window handle
-		(HMENU)ID_BUTTON2,                   // the ID of your button
-		hInstance,                            // the instance of your application
-		NULL);                               // extra bits you dont really need
+	//floor 4 buttons
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("1"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		Button, Elevator_Height + 4 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON4_1,
+		hInstance,
+		NULL);
+	
+	hwndButton = CreateWindow(TEXT("button"),        // The class name required is button
+		TEXT("2"),									 // the caption of the button
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,		 // the styles
+		Button, Elevator_Height + 3 * Button,        // the left and top co-ordinates
+		Button, Button,                              // width and height
+		hWnd,									     // parent window handle
+		(HMENU)ID_BUTTON4_2,					     // the ID of your button
+		hInstance,								     // the instance of your application
+		NULL);									     // extra bits you dont really need
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("3"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		Button, Elevator_Height + 2 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON4_3,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("5"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		Button, Elevator_Height,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON4_5,
+		hInstance,
+		NULL);
+
+	//floor 5 buttons
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("1"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON5_1,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"), 
+		TEXT("2"),	
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 3 * Button,
+		Button, Button, 
+		hWnd,
+		(HMENU)ID_BUTTON5_2,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("3"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON5_3,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("4"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON5_4,
+		hInstance,
+		NULL);
+
+	//floor 3 buttons
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("1"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		Button, 3 * Elevator_Height + 4 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON3_1,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("2"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		Button, 3 * Elevator_Height + 3 * Button,
+		Button, Button, 
+		hWnd,
+		(HMENU)ID_BUTTON3_2,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("4"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		Button, 3 * Elevator_Height + Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON3_4,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("5"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		Button, 3 * Elevator_Height,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON3_5,
+		hInstance,
+		NULL);
+
+	//floor 2 buttons
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("1"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 4 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON2_1,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("3"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 3 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON2_3,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("4"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 2 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON2_4,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("5"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON2_5,
+		hInstance,
+		NULL);
+
+	//floor 1 buttons
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("2"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height + 3 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON1_2,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("3"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height + 2 * Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON1_3,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("4"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height + Button,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON1_4,
+		hInstance,
+		NULL);
+
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("5"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height,
+		Button, Button,
+		hWnd,
+		(HMENU)ID_BUTTON1_5,
+		hInstance,
+		NULL);
 
 	// create button and store the handle                                                       
 
@@ -318,13 +525,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;
-		case ID_BUTTON1 :
+		case ID_BUTTON1_2 :
 			col++;
 			if (col > 10)
 				col = 0;
-			repaintWindow(hWnd, hdc, ps, &drawArea1);
+			repaintWindow(hWnd, hdc, ps, &Elevator_Shaft);
 			break;
-		case ID_BUTTON2 :
+		case ID_BUTTON1_3 :
 			repaintWindow(hWnd, hdc, ps, NULL);
 			break;
 		default:
@@ -332,9 +539,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
 		// TODO: Add any drawing code here (not depend on timer, buttons)
-		EndPaint(hWnd, &ps);
+
+		StaticPaint(hWnd, hdc, ps, &StaticDrawArea);
+
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
