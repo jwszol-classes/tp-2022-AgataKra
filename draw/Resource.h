@@ -1,7 +1,7 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
 // Used by draw.rc
-//
+// 
 
 #define IDS_APP_TITLE			103
 
@@ -18,10 +18,30 @@
 #define IDC_STATIC				-1
 #endif
 // Values for other objects (eg. buttons)
-#define ID_BUTTON1				200
-#define ID_BUTTON2				201
-#define ID_RBUTTON1				210
-#define ID_RBUTTON2				211
+#define ID_BUTTON1_2			201
+#define ID_BUTTON1_3			202
+#define ID_BUTTON1_4			203
+#define ID_BUTTON1_5			204
+
+#define ID_BUTTON2_1			205
+#define ID_BUTTON2_3			206
+#define ID_BUTTON2_4			207
+#define ID_BUTTON2_5			208
+
+#define ID_BUTTON3_1			209
+#define ID_BUTTON3_2			210
+#define ID_BUTTON3_4			211
+#define ID_BUTTON3_5			212
+
+#define ID_BUTTON4_1			213
+#define ID_BUTTON4_2			214
+#define ID_BUTTON4_3			215
+#define ID_BUTTON4_5			216
+
+#define ID_BUTTON5_1			217
+#define ID_BUTTON5_2			218
+#define ID_BUTTON5_3			219
+#define ID_BUTTON5_4			220
 
 // Next default values for new objects
 //
