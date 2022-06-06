@@ -24,7 +24,7 @@ const int Button = 25;
 //creating my base structures here:
 
 enum Directions {UP, DOWN, NONE};				//NONE is for when it doesnt have passengers and waits for new ones
-enum DoorState {OPEN, OPENING, CLOSING, CLOSED};					
+enum DoorState {OPEN, CLOSED};					
 enum Position {FLOOR1, FLOOR2, FLOOR3, FLOOR4, FLOOR5, ELEVATOR, TRANSIT};	//ELEVATOR is just for people
 
 struct Person {
@@ -32,16 +32,21 @@ struct Person {
 	Position destination;
 	Directions destination_direction;
 	int person_weight = 70;
+	int position_x;
+	int position_y;
 };
 
 struct Elevator {
 	std::vector<Person>passengers;
-	Directions direction = UP;
+	Directions direction = NONE;
 	int weight_limit = 600;
 	int current_weight = 0;
 	DoorState door = CLOSED;
 	Position elevator_position = FLOOR1;
+	int position_y = 0;
 };
+
+Elevator elevator;
 
 int test = 0;
 
@@ -56,15 +61,18 @@ INT value;
 // buttons
 HWND hwndButton;
 
-// sent data
-int col = 0;
-//std::vector<Point> data;
-
 //Fit the elevator in the Elevator_Shaft, we'd have to employ some additional drawing areas to have the "shell" walls also open
 //it's an option but for now I'd say is not essential
 
-RECT StaticDrawArea = { 0, 0, 1500, 1500};
 RECT Elevator_Shaft = { E_Endings + Platform_Length + 2, E_Endings, E_Endings + Platform_Length + Elevator_Length + 19, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
+RECT StaticDrawArea = { 0, 0, 1500, 1500};
+
+//input the areas per floor here:
+RECT Floor1 = {};
+RECT Floor2 = {};
+RECT Floor3 = {};
+RECT Floor4 = {};
+RECT Floor5 = {};
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -73,27 +81,51 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
 
+bool passengers_to_enter() {															//in this function you check if on the current floor anyone needs to enter (returns true in this case)
+	return false;
+}
+
+bool passengers_to_depart() {															//in this function you check if on the current floor anyone needs to depart (returns true in this case)
+	return false;
+}
+
+bool passengers_in_elevator() {															//this one checks if people arrived at their spot in the elevator
+	return false;
+}
+
+bool passengers_at_destination() {														//this one checks if people arrived at their destination (end exited the window)
+	return false;
+}
 
 void MyOnPaint(HDC hdc)
 {
-	Graphics graphics(hdc);	
+	Graphics graphics(hdc);
 	Pen pen(Color(255, 0, 0, 255));	
-	Pen pen2(Color(255, 25*col, 0, 255));
+	Pen pen2(Color(255, 20, 0, 255));
+	graphics.DrawLine(&pen, 0, 10, 100, 200);
 
+	if (elevator.door == CLOSED && elevator.elevator_position == TRANSIT) {}					//move up or down between floors
 	
-	/*for (int i = 1; i < 50; i++)
-		graphics.DrawLine(&pen2, 0, 0, 50, test);
-	test += 10;
-	graphics.DrawRectangle(&pen, 50 + value, 400, 10, 20); */
+	else if (elevator.door == CLOSED && elevator.direction == NONE) {}							//dont move if no direction
+
+	else if (elevator.door == CLOSED && (passengers_to_depart() || passengers_to_enter())) {}	//are the doors supposed to open? (to let people out or in) if so open doors 
+
+	else if (elevator.door == OPEN && passengers_to_depart()) {}								//let people out
+
+	else if (elevator.door == OPEN && passengers_to_enter() && !passengers_to_depart()) {}		//is anyone going into the elevator? (let people in)
+
+	else if (elevator.door == OPEN && !passengers_to_enter() && !passengers_to_depart()) {}		//is everyone in/out as needed? if so close doors
+
+	else if (elevator.door == CLOSED && !passengers_to_enter() && !passengers_to_depart()) {	//if elevator on floor with doors closed, move elevator in the needed direction
+		if (elevator.direction == UP) {}
+		else if (elevator.direction == DOWN) {}
+	}
 }
 
 //for now repaintwindow just has a test animation TO DO:
 void repaintWindow(HWND hWnd, HDC &hdc, PAINTSTRUCT &ps, RECT *drawArea)
 {
-	/*if (drawArea == NULL)
-		InvalidateRect(hWnd, NULL, TRUE); // repaint all
-	else*/
-		InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
+	InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
 	hdc = BeginPaint(hWnd, &ps);
 	MyOnPaint(hdc);
 	EndPaint(hWnd, &ps);
@@ -106,7 +138,7 @@ void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 
 	Graphics graphics(hdc);
 	Pen pen(Color(255, 0, 0, 255));
-	Pen pen2(Color(255, 25 * col, 0, 255));
+	Pen pen2(Color(255, 25, 0, 255));
 
 	for (int i = 0; i <= Number_Of_Floors; i++) {
 
