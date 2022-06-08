@@ -13,19 +13,35 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-const int Platform_Length = 250;
 const int Platform_Height = 3;
-const int Shaft_Length = 200;
+const int Elevator_L = 310;
+const int Elevator_R = 490;
 const int Elevator_Height = 100;
-const int Elevator_Length = 180;
+const int E_spot_0 = 320;						// x value of a spot for a person in an elevator
+const int E_spot_1 = 340;
+const int E_spot_2 = 360;
+const int E_spot_3 = 380;
+const int E_spot_4 = 400;
+const int E_spot_5 = 420;
+const int E_spot_6 = 440;
+const int E_spot_7 = 460;
 const int Number_Of_Floors = 5;
 const int E_Endings = 50;
 const int Button = 25;
+const int Floor_5 = 150;
+const int Floor_4 = 250;
+const int Floor_3 = 350;
+const int Floor_2 = 450;
+const int Floor_1 = 550;
+const int L_Platform_L = 50;					//Left platform left end
+const int L_Platform_R = 300;
+const int P_Platform_L = 500;
+const int R_Platform_R = 750;
 //creating my base structures here:
 
-enum Directions {UP, DOWN, NONE};				//NONE is for when it doesnt have passengers and waits for new ones
-enum DoorState {OPEN, CLOSED};					
-enum Position {FLOOR1, FLOOR2, FLOOR3, FLOOR4, FLOOR5, ELEVATOR, TRANSIT};	//ELEVATOR is just for people
+enum Directions { UP, DOWN, NONE };				//NONE is for when it doesnt have passengers and waits for new ones
+enum DoorState { OPEN, OPENING, CLOSING, CLOSED };
+enum Position { FLOOR1, FLOOR2, FLOOR3, FLOOR4, FLOOR5, ELEVATOR, TRANSIT };	//ELEVATOR is just for people
 
 struct Person {
 	Position person_position;
@@ -34,6 +50,7 @@ struct Person {
 	int person_weight = 70;
 	int position_x;
 	int position_y;
+	int Elevator_Spot;
 };
 
 struct Elevator {
@@ -64,7 +81,7 @@ HWND hwndButton;
 //Fit the elevator in the Elevator_Shaft, we'd have to employ some additional drawing areas to have the "shell" walls also open
 //it's an option but for now I'd say is not essential
 
-RECT Elevator_Shaft = { E_Endings + Platform_Length + 2, E_Endings, E_Endings + Platform_Length + Elevator_Length + 19, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
+RECT Elevator_Shaft = { L_Platform_R, E_Endings, P_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
 RECT StaticDrawArea = { 0, 0, 1500, 1500};
 
 //input the areas per floor here:
@@ -81,15 +98,76 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
 
-bool passengers_to_enter() {															//in this function you check if on the current floor anyone needs to enter (returns true in this case)
+bool passengers_to_enter() {							//in this function you check if on the current floor anyone needs to enter (returns true in this case)
+	switch (elevator.elevator_position)
+	{
+	case FLOOR1:
+		if (floor1_people.size() != 0)
+			return true;
+		break;
+	case FLOOR2:
+		if (floor2_people.size() != 0)
+			return true;
+		break;
+	case FLOOR3:
+		if (floor3_people.size() != 0)
+			return true;
+		break;
+	case FLOOR4:
+		if (floor4_people.size() != 0)
+			return true;
+		break;
+	case FLOOR5:
+		if (floor5_people.size() != 0)
+			return true;
+		break;
+	default:
+		break;
+	}
 	return false;
 }
 
-bool passengers_to_depart() {															//in this function you check if on the current floor anyone needs to depart (returns true in this case)
+bool passengers_to_depart() {							//in this function you check if on the current floor anyone needs to depart (returns true in this case)
+	switch (elevator.elevator_position)
+	{
+	case FLOOR1:
+		for (int k = 0; k < elevator.passengers.size(); k++) {
+			if (elevator.passengers[k].destination == FLOOR1)
+				return true;
+		}
+		break;
+	case FLOOR2:
+		for (int k = 0; k < elevator.passengers.size(); k++) {
+			if (elevator.passengers[k].destination == FLOOR2)
+				return true;
+		}
+		break;
+	case FLOOR3:
+		for (int k = 0; k < elevator.passengers.size(); k++) {
+			if (elevator.passengers[k].destination == FLOOR3)
+				return true;
+		}
+		break;
+	case FLOOR4:
+		for (int k = 0; k < elevator.passengers.size(); k++) {
+			if (elevator.passengers[k].destination == FLOOR4)
+				return true;
+		}
+		break;
+	case FLOOR5:
+		for (int k = 0; k < elevator.passengers.size(); k++) {
+			if (elevator.passengers[k].destination == FLOOR5)
+				return true;
+		}
+		break;
+	default:
+		break;
+	}
 	return false;
 }
 
 bool passengers_in_elevator() {															//this one checks if people arrived at their spot in the elevator
+	
 	return false;
 }
 
@@ -104,17 +182,23 @@ void MyOnPaint(HDC hdc)
 	Pen pen2(Color(255, 20, 0, 255));
 	graphics.DrawLine(&pen, 0, 10, 100, 200);
 
-	if (elevator.door == CLOSED && elevator.elevator_position == TRANSIT) {}					//move up or down between floors
+	if (elevator.door == CLOSED && elevator.elevator_position == TRANSIT) {		//move up or down between floors
+	}
 	
-	else if (elevator.door == CLOSED && elevator.direction == NONE) {}							//dont move if no direction
+	else if (elevator.door == CLOSED && elevator.direction == NONE) {			//dont move if no direction
+	}
 
-	else if (elevator.door == CLOSED && (passengers_to_depart() || passengers_to_enter())) {}	//are the doors supposed to open? (to let people out or in) if so open doors 
+	else if (elevator.door == CLOSED && (passengers_to_depart() || passengers_to_enter())) {	//are the doors supposed to open? (to let people out or in) if so open doors 
+	}
 
-	else if (elevator.door == OPEN && passengers_to_depart()) {}								//let people out
+	else if (elevator.door == OPEN && passengers_to_depart()) {		//let people out
+	}
 
-	else if (elevator.door == OPEN && passengers_to_enter() && !passengers_to_depart()) {}		//is anyone going into the elevator? (let people in)
+	else if (elevator.door == OPEN && passengers_to_enter() && !passengers_to_depart()) {	//is anyone going into the elevator? (let people in)
+	}
 
-	else if (elevator.door == OPEN && !passengers_to_enter() && !passengers_to_depart()) {}		//is everyone in/out as needed? if so close doors
+	else if (elevator.door == OPEN && !passengers_to_enter() && !passengers_to_depart()) {	//is everyone in/out as needed? if so close doors
+	}
 
 	else if (elevator.door == CLOSED && !passengers_to_enter() && !passengers_to_depart()) {	//if elevator on floor with doors closed, move elevator in the needed direction
 		if (elevator.direction == UP) {}
@@ -145,29 +229,29 @@ void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 		if (i % 2 == 0) //Left Side of the elevator
 			if (i == 0) {
 				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, Platform_Length + E_Endings - 2 + j, E_Endings / 2, Platform_Length + E_Endings - 2 + j, Elevator_Height + E_Endings);
-					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings - 1 + j, (E_Endings / 2), Platform_Length + Shaft_Length + E_Endings - 1 + j, E_Endings);
-					graphics.DrawLine(&pen, Platform_Length + E_Endings, (E_Endings / 2) - 1 + j, Platform_Length + Shaft_Length + E_Endings, (E_Endings / 2) - 1 + j);
+					graphics.DrawLine(&pen, L_Platform_R - 2 + j, E_Endings / 2, L_Platform_R - 2 + j, Floor_5);
+					graphics.DrawLine(&pen, P_Platform_L - 1 + j, (E_Endings / 2), P_Platform_L - 1 + j, E_Endings);
+					graphics.DrawLine(&pen, L_Platform_R, (E_Endings / 2) - 1 + j, P_Platform_L, (E_Endings / 2) - 1 + j);
 				}
 			}
 			else {
 				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, E_Endings, (i * Elevator_Height + E_Endings) - 1 + j, Platform_Length + E_Endings, (i * Elevator_Height + E_Endings) - 1 + j);
-					graphics.DrawLine(&pen, Platform_Length + E_Endings - 2 + j, (i * Elevator_Height + E_Endings), Platform_Length + E_Endings - 2 + j, ((i + 1) * Elevator_Height + E_Endings));
+					graphics.DrawLine(&pen, L_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, L_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
+					graphics.DrawLine(&pen, L_Platform_R - 2 + j, ((i - 1) * Elevator_Height + Floor_5), L_Platform_R - 2 + j, i * Elevator_Height + Floor_5);
 				}
 			}
 		else
 			if (i == 5)
 				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
-					graphics.DrawLine(&pen, Platform_Length + E_Endings - 2 + j, i * Elevator_Height + E_Endings, Platform_Length + E_Endings - 2 + j, i * Elevator_Height + 2 * E_Endings);
-					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings - 1 + j, (i * Elevator_Height + E_Endings) + j, Platform_Length + Shaft_Length + E_Endings - 1 + j, (i * Elevator_Height + 2 * E_Endings) + j);
-					graphics.DrawLine(&pen, Platform_Length + E_Endings, (i * Elevator_Height + 2 * E_Endings) - 1 + j, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + 2 * E_Endings) - 1 + j);
+					graphics.DrawLine(&pen, P_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
+					graphics.DrawLine(&pen, L_Platform_R - 2 + j, i * Elevator_Height + E_Endings, L_Platform_R - 2 + j, i * Elevator_Height + 2 * E_Endings);
+					graphics.DrawLine(&pen, P_Platform_L - 1 + j, (i * Elevator_Height + E_Endings) + j, P_Platform_L - 1 + j, (i * Elevator_Height + 2 * E_Endings) + j);
+					graphics.DrawLine(&pen, L_Platform_R, (i * Elevator_Height + 2 * E_Endings) - 1 + j, P_Platform_L, (i * Elevator_Height + 2 * E_Endings) - 1 + j);
 				}
 			else
 				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j, (2 * Platform_Length) + Shaft_Length + E_Endings, (i * Elevator_Height + E_Endings) + j);
-					graphics.DrawLine(&pen, Platform_Length + Shaft_Length + E_Endings + 2 - j, (i * Elevator_Height + E_Endings) + 1, Platform_Length + Shaft_Length + E_Endings + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
+					graphics.DrawLine(&pen, P_Platform_L, (i * Elevator_Height + E_Endings) + j, R_Platform_R, (i * Elevator_Height + E_Endings) + j);
+					graphics.DrawLine(&pen, P_Platform_L + 2 - j, (i * Elevator_Height + E_Endings) + 1, P_Platform_L + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
 				}
 
 	}
@@ -294,7 +378,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("1"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, Elevator_Height + 4 * Button,
+		Button, Floor_4 - 2 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON4_1,
@@ -304,7 +388,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),        // The class name required is button
 		TEXT("2"),									 // the caption of the button
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,		 // the styles
-		Button, Elevator_Height + 3 * Button,        // the left and top co-ordinates
+		Button, Floor_4 - 3 * Button,				 // the left and top co-ordinates
 		Button, Button,                              // width and height
 		hWnd,									     // parent window handle
 		(HMENU)ID_BUTTON4_2,					     // the ID of your button
@@ -314,7 +398,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("3"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, Elevator_Height + 2 * Button,
+		Button, Floor_4 - 4 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON4_3,
@@ -324,7 +408,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("5"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, Elevator_Height,
+		Button, Floor_4 - 6 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON4_5,
@@ -336,7 +420,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("1"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Button,
+		R_Platform_R, Floor_5 - 2 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON5_1,
@@ -346,7 +430,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"), 
 		TEXT("2"),	
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 3 * Button,
+		R_Platform_R, Floor_5 - 3 * Button,
 		Button, Button, 
 		hWnd,
 		(HMENU)ID_BUTTON5_2,
@@ -356,7 +440,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("3"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Button,
+		R_Platform_R, Floor_5 - 4 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON5_3,
@@ -366,7 +450,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("4"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, Button,
+		R_Platform_R, Floor_5 - 5 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON5_4,
@@ -378,7 +462,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("1"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height + 4 * Button,
+		Button, Floor_2 - 2 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON2_1,
@@ -388,7 +472,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("3"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height + 2 * Button,
+		Button, Floor_2 - 4 * Button,
 		Button, Button, 
 		hWnd,
 		(HMENU)ID_BUTTON2_3,
@@ -398,7 +482,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("4"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height + Button,
+		Button, Floor_2 - 5 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON2_4,
@@ -408,7 +492,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("5"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		Button, 3 * Elevator_Height,
+		Button, Floor_2 - 6 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON2_5,
@@ -420,7 +504,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("1"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 4 * Button,
+		R_Platform_R, Floor_3 - 2 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON3_1,
@@ -430,7 +514,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("2"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + 3 * Button,
+		R_Platform_R, Floor_3 - 3 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON3_2,
@@ -440,7 +524,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("4"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height + Button,
+		R_Platform_R, Floor_3 - 5 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON3_4,
@@ -450,7 +534,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("5"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 2 * Elevator_Height,
+		R_Platform_R, Floor_3 - 6 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON3_5,
@@ -462,7 +546,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("2"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height + 3 * Button,
+		R_Platform_R, Floor_1 - 3 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON1_2,
@@ -472,7 +556,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("3"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height + 2 * Button,
+		R_Platform_R, Floor_1 - 4 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON1_3,
@@ -482,7 +566,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("4"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height + Button,
+		R_Platform_R, Floor_1 - 5 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON1_4,
@@ -492,7 +576,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hwndButton = CreateWindow(TEXT("button"),
 		TEXT("5"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		3 * Button + 2 * Platform_Length + Elevator_Length, 4 * Elevator_Height,
+		R_Platform_R, Floor_1 - 6 * Button,
 		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON1_5,
