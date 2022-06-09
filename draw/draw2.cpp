@@ -99,6 +99,12 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
 
+bool passengers_waiting() {
+	if (floor1_people.size() != 0 && floor2_people.size() != 0 && floor3_people.size() != 0 && floor4_people.size() != 0 && floor5_people.size() != 0)
+		return true;
+	else return false;
+}
+
 bool passengers_to_enter() {							//in this function you check if on the current floor anyone needs to enter (returns true in this case)
 	switch (elevator.elevator_position)
 	{
@@ -185,7 +191,22 @@ bool passengers_at_destination() {			//this one checks if people arrived at thei
 	return false;
 }
 
-
+void elevator_control() {
+	switch (elevator.elevator_position) {
+	case FLOOR5:
+		break;
+	case FLOOR4:
+		break;
+	case FLOOR3:
+		break;
+	case FLOOR2:
+		break;
+	case FLOOR1:
+		break;
+	default:
+		break;
+	}
+}
 
 void MyOnPaint(HDC hdc)
 {
