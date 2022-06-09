@@ -105,7 +105,8 @@ bool passengers_waiting() {
 	else return false;
 }
 
-bool passengers_to_enter() {							//in this function you check if on the current floor anyone needs to enter (returns true in this case)
+bool passengers_to_enter() {	//in this function you check if on the current floor anyone needs to enter (returns true in this case)
+	if ((elevator.current_weight + 70) < elevator.weight_limit)
 	switch (elevator.elevator_position)
 	{
 	case FLOOR1:
@@ -183,27 +184,43 @@ bool passengers_in_elevator() {				//this one checks if people arrived at their 
 }
 
 bool passengers_at_destination() {			//this one checks if people arrived at their destination (end exited the window)
-	for (int j = 0; j < 8; j++) {
-		if (elevator.passengers[j].destination == elevator.elevator_position)
-			if (elevator.passengers[j].position_x < L_Platform_R - 20 && elevator.passengers[j].position_x > R_Platform_L)
-				return true;
-	}
 	return false;
 }
 
 void elevator_control() {
 	switch (elevator.elevator_position) {
 	case FLOOR5:
+		if (passengers_to_depart()) {
+			for (int i = 0; i < elevator.passengers.size();) {
+				if (elevator.passengers[i].destination == FLOOR5) {
+					//play the animation of the passenger leaving
+					elevator.passengers.erase(elevator.passengers.begin() + i);
+					elevator.current_weight -= 70;
+				}
+				else
+					i++;
+			}
+		};
+		if (passengers_to_enter()) {
+			for (int i = 0; i < floor5_people.size(); i++) {
+				if (floor5_people[i].destination);
+			}
+		};
+		if (passengers_in_elevator());
+		if (elevator.direction == UP);
+		else if (elevator.direction == DOWN)
 		break;
 	case FLOOR4:
+		
 		break;
 	case FLOOR3:
+		
 		break;
 	case FLOOR2:
+		
 		break;
 	case FLOOR1:
-		break;
-	default:
+		
 		break;
 	}
 }
