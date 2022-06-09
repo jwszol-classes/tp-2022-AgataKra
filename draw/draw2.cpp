@@ -35,7 +35,7 @@ const int Floor_2 = 450;
 const int Floor_1 = 550;
 const int L_Platform_L = 50;					//Left platform left end
 const int L_Platform_R = 300;
-const int P_Platform_L = 500;
+const int R_Platform_L = 500;
 const int R_Platform_R = 750;
 //creating my base structures here:
 
@@ -61,6 +61,7 @@ struct Elevator {
 	DoorState door = CLOSED;
 	Position elevator_position = FLOOR1;
 	int position_y = 0;
+	int Spots[8];
 };
 
 Elevator elevator;
@@ -81,8 +82,8 @@ HWND hwndButton;
 //Fit the elevator in the Elevator_Shaft, we'd have to employ some additional drawing areas to have the "shell" walls also open
 //it's an option but for now I'd say is not essential
 
-RECT Elevator_Shaft = { L_Platform_R, E_Endings, P_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
-RECT StaticDrawArea = { 0, 0, 1500, 1500};
+RECT Elevator_Shaft = { L_Platform_R + 2, E_Endings, R_Platform_L - 1, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
+RECT StaticDrawArea = { 0, 0, 1500, 1500 };
 
 //input the areas per floor here:
 RECT Floor1 = {};
@@ -166,25 +167,36 @@ bool passengers_to_depart() {							//in this function you check if on the curre
 	return false;
 }
 
-bool passengers_in_elevator() {															//this one checks if people arrived at their spot in the elevator
-	
+bool passengers_in_elevator() {				//this one checks if people arrived at their spot in the elevator
+	for (int j = 0; j < 8; j++) {
+		int k = elevator.passengers[j].Elevator_Spot;
+		if (elevator.passengers[j].position_x != E_spot_0 + k * 20)
+			return false;
+	}
+	return true;
+}
+
+bool passengers_at_destination() {			//this one checks if people arrived at their destination (end exited the window)
+	for (int j = 0; j < 8; j++) {
+		if (elevator.passengers[j].destination == elevator.elevator_position)
+			if (elevator.passengers[j].position_x < L_Platform_R - 20 && elevator.passengers[j].position_x > R_Platform_L)
+				return true;
+	}
 	return false;
 }
 
-bool passengers_at_destination() {														//this one checks if people arrived at their destination (end exited the window)
-	return false;
-}
+
 
 void MyOnPaint(HDC hdc)
 {
 	Graphics graphics(hdc);
-	Pen pen(Color(255, 0, 0, 255));	
+	Pen pen(Color(255, 0, 0, 255));
 	Pen pen2(Color(255, 20, 0, 255));
 	graphics.DrawLine(&pen, 0, 10, 100, 200);
 
 	if (elevator.door == CLOSED && elevator.elevator_position == TRANSIT) {		//move up or down between floors
 	}
-	
+
 	else if (elevator.door == CLOSED && elevator.direction == NONE) {			//dont move if no direction
 	}
 
@@ -207,7 +219,7 @@ void MyOnPaint(HDC hdc)
 }
 
 //for now repaintwindow just has a test animation TO DO:
-void repaintWindow(HWND hWnd, HDC &hdc, PAINTSTRUCT &ps, RECT *drawArea)
+void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 {
 	InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
 	hdc = BeginPaint(hWnd, &ps);
@@ -230,8 +242,8 @@ void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 			if (i == 0) {
 				for (int j = 1; j < Platform_Height + 1; j++) {
 					graphics.DrawLine(&pen, L_Platform_R - 2 + j, E_Endings / 2, L_Platform_R - 2 + j, Floor_5);
-					graphics.DrawLine(&pen, P_Platform_L - 1 + j, (E_Endings / 2), P_Platform_L - 1 + j, E_Endings);
-					graphics.DrawLine(&pen, L_Platform_R, (E_Endings / 2) - 1 + j, P_Platform_L, (E_Endings / 2) - 1 + j);
+					graphics.DrawLine(&pen, R_Platform_L - 1 + j, (E_Endings / 2), R_Platform_L - 1 + j, E_Endings);
+					graphics.DrawLine(&pen, L_Platform_R, (E_Endings / 2) - 1 + j, R_Platform_L, (E_Endings / 2) - 1 + j);
 				}
 			}
 			else {
@@ -243,15 +255,15 @@ void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 		else
 			if (i == 5)
 				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, P_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
+					graphics.DrawLine(&pen, R_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
 					graphics.DrawLine(&pen, L_Platform_R - 2 + j, i * Elevator_Height + E_Endings, L_Platform_R - 2 + j, i * Elevator_Height + 2 * E_Endings);
-					graphics.DrawLine(&pen, P_Platform_L - 1 + j, (i * Elevator_Height + E_Endings) + j, P_Platform_L - 1 + j, (i * Elevator_Height + 2 * E_Endings) + j);
-					graphics.DrawLine(&pen, L_Platform_R, (i * Elevator_Height + 2 * E_Endings) - 1 + j, P_Platform_L, (i * Elevator_Height + 2 * E_Endings) - 1 + j);
+					graphics.DrawLine(&pen, R_Platform_L - 1 + j, (i * Elevator_Height + E_Endings) + j, R_Platform_L - 1 + j, (i * Elevator_Height + 2 * E_Endings) + j);
+					graphics.DrawLine(&pen, L_Platform_R, (i * Elevator_Height + 2 * E_Endings) - 1 + j, R_Platform_L, (i * Elevator_Height + 2 * E_Endings) - 1 + j);
 				}
 			else
 				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, P_Platform_L, (i * Elevator_Height + E_Endings) + j, R_Platform_R, (i * Elevator_Height + E_Endings) + j);
-					graphics.DrawLine(&pen, P_Platform_L + 2 - j, (i * Elevator_Height + E_Endings) + 1, P_Platform_L + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
+					graphics.DrawLine(&pen, R_Platform_L, (i * Elevator_Height + E_Endings) + j, R_Platform_R, (i * Elevator_Height + E_Endings) + j);
+					graphics.DrawLine(&pen, R_Platform_L + 2 - j, (i * Elevator_Height + E_Endings) + 1, R_Platform_L + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
 				}
 
 	}
@@ -384,7 +396,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		(HMENU)ID_BUTTON4_1,
 		hInstance,
 		NULL);
-	
+
 	hwndButton = CreateWindow(TEXT("button"),        // The class name required is button
 		TEXT("2"),									 // the caption of the button
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,		 // the styles
@@ -427,11 +439,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		hInstance,
 		NULL);
 
-	hwndButton = CreateWindow(TEXT("button"), 
-		TEXT("2"),	
+	hwndButton = CreateWindow(TEXT("button"),
+		TEXT("2"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 		R_Platform_R, Floor_5 - 3 * Button,
-		Button, Button, 
+		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON5_2,
 		hInstance,
@@ -473,7 +485,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		TEXT("3"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 		Button, Floor_2 - 4 * Button,
-		Button, Button, 
+		Button, Button,
 		hWnd,
 		(HMENU)ID_BUTTON2_3,
 		hInstance,
@@ -588,7 +600,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	/*hwndButton = CreateWindow(TEXT("button"), TEXT("Timer ON"),
 		WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
 		300, 155, 100, 30, hWnd, (HMENU)ID_RBUTTON1, GetModuleHandle(NULL), NULL);
-
 	hwndButton = CreateWindow(TEXT("button"), TEXT("Timer OFF"),
 		WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
 		300, 200, 100, 30, hWnd, (HMENU)ID_RBUTTON2, GetModuleHandle(NULL), NULL);*/
@@ -642,13 +653,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;
-		case ID_BUTTON1_2 :
+		case ID_BUTTON1_2:
 			traveller.person_position = FLOOR1;
 			traveller.destination = FLOOR2;
 			traveller.destination_direction = UP;
 			floor1_people.push_back(traveller);
 			break;
-		case ID_BUTTON1_3 :
+		case ID_BUTTON1_3:
 			traveller.person_position = FLOOR1;
 			traveller.destination = FLOOR3;
 			traveller.destination_direction = UP;
