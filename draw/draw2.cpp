@@ -17,6 +17,8 @@ const int Platform_Height = 3;
 const int Elevator_L = 310;
 const int Elevator_R = 490;
 const int Elevator_Height = 100;
+const int Traveller_Speed = 10;
+const int Spot_Width = 20;
 const int E_spot_0 = 320;						// x value of a spot for a person in an elevator
 const int E_spot_1 = 340;
 const int E_spot_2 = 360;
@@ -61,7 +63,7 @@ struct Elevator {
 	DoorState door = CLOSED;
 	Position elevator_position = FLOOR1;
 	int position_y = 0;
-	int Spots[8];
+	bool Spots[8] = {false, false , false , false , false , false , false , false};
 };
 
 Elevator elevator;
@@ -106,31 +108,32 @@ bool passengers_waiting() {
 }
 
 bool passengers_to_enter() {	//in this function you check if on the current floor anyone needs to enter (returns true in this case)
-	if ((elevator.current_weight + 70) < elevator.weight_limit)
-	switch (elevator.elevator_position)
-	{
-	case FLOOR1:
-		if (floor1_people.size() != 0)
-			return true;
-		break;
-	case FLOOR2:
-		if (floor2_people.size() != 0)
-			return true;
-		break;
-	case FLOOR3:
-		if (floor3_people.size() != 0)
-			return true;
-		break;
-	case FLOOR4:
-		if (floor4_people.size() != 0)
-			return true;
-		break;
-	case FLOOR5:
-		if (floor5_people.size() != 0)
-			return true;
-		break;
-	default:
-		break;
+	if ((elevator.current_weight + 70) < elevator.weight_limit) {
+		switch (elevator.elevator_position)
+		{
+		case FLOOR1:
+			if (floor1_people.size() != 0)
+				return true;
+			break;
+		case FLOOR2:
+			if (floor2_people.size() != 0)
+				return true;
+			break;
+		case FLOOR3:
+			if (floor3_people.size() != 0)
+				return true;
+			break;
+		case FLOOR4:
+			if (floor4_people.size() != 0)
+				return true;
+			break;
+		case FLOOR5:
+			if (floor5_people.size() != 0)
+				return true;
+			break;
+		default:
+			break;
+		}
 	}
 	return false;
 }
@@ -184,45 +187,63 @@ bool passengers_in_elevator() {				//this one checks if people arrived at their 
 }
 
 bool passengers_at_destination() {			//this one checks if people arrived at their destination (end exited the window)
+	for (int j = 0; j < 8; j++) {
+		if (elevator.passengers[j].destination == elevator.elevator_position) {
+			if (elevator.elevator_position % 2 == 0)
+				if (elevator.passengers[j].position_x > R_Platform_R)
+					return true;
+			if (elevator.elevator_position % 2 == 1)
+				if (elevator.passengers[j].position_x < L_Platform_L - Spot_Width)
+					return true;
+		}
+
+	}
 	return false;
 }
 
-void elevator_control() {
-	switch (elevator.elevator_position) {
-	case FLOOR5:
-		if (passengers_to_depart()) {
-			for (int i = 0; i < elevator.passengers.size();) {
-				if (elevator.passengers[i].destination == FLOOR5) {
-					//play the animation of the passenger leaving
-					elevator.passengers.erase(elevator.passengers.begin() + i);
-					elevator.current_weight -= 70;
-				}
-				else
-					i++;
+void elevator_control(HDC hdc) {
+	if (passengers_to_depart()) {
+		for (int i = 0; i < elevator.passengers.size();) {
+			if (elevator.passengers[i].destination == elevator.elevator_position) {
+				if (elevator.elevator_position % 2 == 0)
+					elevator.passengers[i].position_x += Traveller_Speed;
+
+				if (elevator.elevator_position % 2 == 1)
+					elevator.passengers[i].position_x -= Traveller_Speed;
+
+				if (!passengers_at_destination)							//Until the passanger leaves the floor nothing will continue
+					MyOnPaint(hdc);
+				int j = elevator.passengers[i].Elevator_Spot;
+				elevator.Spots[j] = false;
+				elevator.passengers.erase(elevator.passengers.begin() + i);
+				elevator.current_weight -= 70;
 			}
-		};
-		if (passengers_to_enter()) {
+			else
+				i++;
+		}
+	};
+	if (passengers_to_enter()) {
+		switch (elevator.elevator_position) {
+		case FLOOR5:
 			for (int i = 0; i < floor5_people.size(); i++) {
-				if (floor5_people[i].destination);
+				elevator.passengers.push_back(floor5_people[i]);
+				int j = elevator.passengers.size();
+				
 			}
-		};
-		if (passengers_in_elevator());
-		if (elevator.direction == UP);
-		else if (elevator.direction == DOWN)
-		break;
-	case FLOOR4:
-		
-		break;
-	case FLOOR3:
-		
-		break;
-	case FLOOR2:
-		
-		break;
-	case FLOOR1:
-		
-		break;
-	}
+			break;
+		case FLOOR4:
+			break;
+		case FLOOR3:
+			break;
+		case FLOOR2:
+			break;
+		case FLOOR1:
+			break;
+		}
+	};
+	if (passengers_in_elevator());
+	if (elevator.direction == UP);				//move elevator down
+	else if (elevator.direction == DOWN);		//move elevator up
 }
 
 void MyOnPaint(HDC hdc)
@@ -254,6 +275,7 @@ void MyOnPaint(HDC hdc)
 		if (elevator.direction == UP) {}
 		else if (elevator.direction == DOWN) {}
 	}
+	elevator_control(hdc);
 }
 
 //for now repaintwindow just has a test animation TO DO:
