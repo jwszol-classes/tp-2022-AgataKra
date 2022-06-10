@@ -52,7 +52,7 @@ struct Person {
 	int person_weight = 70;
 	int position_x;
 	int position_y;
-	int Elevator_Spot;
+	int Elevator_Spot = 0;
 };
 
 struct Elevator {
@@ -177,7 +177,7 @@ bool passengers_to_depart() {							//in this function you check if on the curre
 	return false;
 }
 
-bool passengers_in_elevator() {				//this one checks if people arrived at their spot in the elevator
+bool passengers_in_elevator() {				//this one checks if people arrived at their spot in the elevator   FUNCTION BROKEN
 	for (int j = 0; j < 8; j++) {
 		int k = elevator.passengers[j].Elevator_Spot;
 		if (elevator.passengers[j].position_x != E_spot_0 + k * 20)
@@ -202,7 +202,7 @@ bool passengers_at_destination() {			//this one checks if people arrived at thei
 }
 
 void elevator_control(HDC hdc) {
-	if (passengers_to_depart()) {
+	if (passengers_to_depart()) {										//POSSIBLE ERROR SOMEWHERE
 		for (int i = 0; i < elevator.passengers.size();) {
 			if (elevator.passengers[i].destination == elevator.elevator_position) {
 				if (elevator.elevator_position % 2 == 0)
