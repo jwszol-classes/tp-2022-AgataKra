@@ -83,11 +83,11 @@ HWND hwndButton;
 
 RECT Elevator_Shaft = { L_Platform_R, E_Endings, R_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
 RECT StaticDrawArea = { 0, 0, 1500, 1500 };
-RECT DrawFloor_1 = { R_Platform_L, Floor_1 - Elevator_Height, R_Platform_R, Floor_1 };
-RECT DrawFloor_2 = { L_Platform_L, Floor_2 - Elevator_Height, L_Platform_R, Floor_2 };
-RECT DrawFloor_3 = { R_Platform_L, Floor_3 - Elevator_Height, R_Platform_R, Floor_3 };
-RECT DrawFloor_4 = { L_Platform_L, Floor_4 - Elevator_Height, L_Platform_R, Floor_4 };
-RECT DrawFloor_5 = { R_Platform_L, Floor_5 - Elevator_Height, R_Platform_R, Floor_5 };
+RECT DrawFloor_1 = { R_Platform_L, Floor_1 - Elevator_Height, R_Platform_R, Floor_1 - 2 };
+RECT DrawFloor_2 = { L_Platform_L, Floor_2 - Elevator_Height, L_Platform_R, Floor_2 - 2 };
+RECT DrawFloor_3 = { R_Platform_L, Floor_3 - Elevator_Height, R_Platform_R, Floor_3 - 2 };
+RECT DrawFloor_4 = { L_Platform_L, Floor_4 - Elevator_Height, L_Platform_R, Floor_4 - 2 };
+RECT DrawFloor_5 = { R_Platform_L, Floor_5 - Elevator_Height, R_Platform_R, Floor_5 - 2 };
 
 //input the areas per floor here:
 RECT Floor1 = {};
@@ -256,10 +256,18 @@ void PaintElevator(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea) {
 	hdc = BeginPaint(hWnd, &ps);
 	Graphics graphics(hdc);
 	graphics.DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
+	elevator.position_y -= 2;
 	EndPaint(hWnd, &ps);
 }
-void PaintPeople(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea, std::vector<Person>people) {
 
+void PaintPeople(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea, std::vector<Person>people) {
+	InvalidateRect(hWnd, drawArea, TRUE);
+
+	hdc = BeginPaint(hWnd, &ps);
+	Graphics graphics(hdc);
+	Pen pen(Color(255, 0, 0, 100));
+	//graphics.DrawLine(&pen, 0, 0, 1500, 1000);
+	EndPaint(hWnd, &ps);
 }
 
 void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Elevator_Area, RECT* Floor1_Area, RECT* Floor2_Area, RECT* Floor3_Area, RECT* Floor4_Area, RECT* Floor5_Area)
@@ -267,9 +275,13 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Elevator_Area, RE
 	MyOnPaint(hdc);
 	hdc = BeginPaint(hWnd, &ps);
 
-
 	PaintElevator(hWnd, hdc, ps, Elevator_Area);
 	PaintPeople(hWnd, hdc, ps, Floor1_Area, floor1_people);
+	PaintPeople(hWnd, hdc, ps, Floor2_Area, floor2_people);
+	PaintPeople(hWnd, hdc, ps, Floor3_Area, floor3_people);
+	PaintPeople(hWnd, hdc, ps, Floor4_Area, floor4_people);
+	PaintPeople(hWnd, hdc, ps, Floor5_Area, floor5_people);
+	//PaintPeople(hWnd, hdc, ps, Elevator_Area, elevator.passengers);
 	EndPaint(hWnd, &ps);
 }
 
@@ -642,7 +654,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
-		SetTimer(hWnd, TMR_1, 25, 0);									//timer for animation is set up here, 25ms per frame
+		SetTimer(hWnd, TMR_1, 40, 0);									//timer for animation is set up here, 40ms per frame
 		break;
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);
