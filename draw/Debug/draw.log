@@ -1,2 +1,7 @@
 ﻿  draw2.cpp
-  draw.vcxproj -> C:\Users\1000a\source\repos\tp-2022-AgataKra12\Debug\draw2.exe
+C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(134,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(140,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(146,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(152,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(158,21): warning C4018: '<': signed/unsigned mismatch
+  draw.vcxproj -> C:\Users\1000a\source\repos\tp-2022-AgataKra5\Debug\draw2.exe

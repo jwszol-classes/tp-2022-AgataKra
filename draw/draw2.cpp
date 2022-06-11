@@ -35,7 +35,7 @@ const int Floor_2 = 450;
 const int Floor_1 = 550;
 const int L_Platform_L = 50;					//Left platform left end
 const int L_Platform_R = 300;
-const int P_Platform_L = 500;
+const int R_Platform_L = 500;
 const int R_Platform_R = 750;
 //creating my base structures here:
 
@@ -81,7 +81,7 @@ HWND hwndButton;
 //Fit the elevator in the Elevator_Shaft, we'd have to employ some additional drawing areas to have the "shell" walls also open
 //it's an option but for now I'd say is not essential
 
-RECT Elevator_Shaft = { L_Platform_R, E_Endings, P_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
+RECT Elevator_Shaft = { L_Platform_R, E_Endings, R_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
 RECT StaticDrawArea = { 0, 0, 1500, 1500};
 
 //input the areas per floor here:
@@ -221,38 +221,32 @@ void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 	hdc = BeginPaint(hWnd, &ps);
 
 	Graphics graphics(hdc);
-	Pen pen(Color(255, 0, 0, 255));
+	Pen Static_Pen(Color(255, 0, 0, 255), Platform_Height);
 	Pen pen2(Color(255, 25, 0, 255));
 
 	for (int i = 0; i <= Number_Of_Floors; i++) {
 
 		if (i % 2 == 0) //Left Side of the elevator
-			if (i == 0) {
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, L_Platform_R - 2 + j, E_Endings / 2, L_Platform_R - 2 + j, Floor_5);
-					graphics.DrawLine(&pen, P_Platform_L - 1 + j, (E_Endings / 2), P_Platform_L - 1 + j, E_Endings);
-					graphics.DrawLine(&pen, L_Platform_R, (E_Endings / 2) - 1 + j, P_Platform_L, (E_Endings / 2) - 1 + j);
-				}
+			if (i == 0) {			//upper end and floor
+				graphics.DrawLine(&Static_Pen, L_Platform_R - 2 , E_Endings / 2, L_Platform_R - 2 , Floor_5);
+				graphics.DrawLine(&Static_Pen, R_Platform_L - 2 , (E_Endings / 2), R_Platform_L - 2 , E_Endings);
+				graphics.DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (E_Endings / 2) - 1 , R_Platform_L, (E_Endings / 2) - 1);
 			}
 			else {
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, L_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, L_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
-					graphics.DrawLine(&pen, L_Platform_R - 2 + j, ((i - 1) * Elevator_Height + Floor_5), L_Platform_R - 2 + j, i * Elevator_Height + Floor_5);
-				}
+				graphics.DrawLine(&Static_Pen, L_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, L_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
+				graphics.DrawLine(&Static_Pen, L_Platform_R - 2, ((i - 1) * Elevator_Height + Floor_5), L_Platform_R - 2, i * Elevator_Height + Floor_5);
 			}
 		else
-			if (i == 5)
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, P_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
-					graphics.DrawLine(&pen, L_Platform_R - 2 + j, i * Elevator_Height + E_Endings, L_Platform_R - 2 + j, i * Elevator_Height + 2 * E_Endings);
-					graphics.DrawLine(&pen, P_Platform_L - 1 + j, (i * Elevator_Height + E_Endings) + j, P_Platform_L - 1 + j, (i * Elevator_Height + 2 * E_Endings) + j);
-					graphics.DrawLine(&pen, L_Platform_R, (i * Elevator_Height + 2 * E_Endings) - 1 + j, P_Platform_L, (i * Elevator_Height + 2 * E_Endings) - 1 + j);
-				}
-			else
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, P_Platform_L, (i * Elevator_Height + E_Endings) + j, R_Platform_R, (i * Elevator_Height + E_Endings) + j);
-					graphics.DrawLine(&pen, P_Platform_L + 2 - j, (i * Elevator_Height + E_Endings) + 1, P_Platform_L + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
-				}
+			if (i == 5) {
+				graphics.DrawLine(&Static_Pen, R_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
+				graphics.DrawLine(&Static_Pen, L_Platform_R - 2, i * Elevator_Height + E_Endings, L_Platform_R - 2, i * Elevator_Height + 2 * E_Endings);
+				graphics.DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_L + 1, (i * Elevator_Height + 2 * E_Endings));
+				graphics.DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1, R_Platform_L + Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1);
+			}
+			else {
+				graphics.DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_R, (i * Elevator_Height + E_Endings));
+				graphics.DrawLine(&Static_Pen, R_Platform_L + 2, (i * Elevator_Height + E_Endings) + 1, R_Platform_L + 2 , ((i + 1) * Elevator_Height + E_Endings));
+			}
 
 	}
 	EndPaint(hWnd, &ps);
