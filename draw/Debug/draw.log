@@ -1,7 +1,9 @@
-﻿  draw2.cpp
-C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(134,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(140,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(146,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(152,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra5\draw\draw2.cpp(158,21): warning C4018: '<': signed/unsigned mismatch
-  draw.vcxproj -> C:\Users\1000a\source\repos\tp-2022-AgataKra5\Debug\draw2.exe
+﻿  stdafx.cpp
+  draw2.cpp
+C:\Users\1000a\source\repos\tp-2022-AgataKra6\draw\draw2.cpp(139,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra6\draw\draw2.cpp(145,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra6\draw\draw2.cpp(151,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra6\draw\draw2.cpp(157,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra6\draw\draw2.cpp(163,21): warning C4018: '<': signed/unsigned mismatch
+  LINK : C:\Users\1000a\source\repos\tp-2022-AgataKra6\Debug\draw2.exe not found or not built by the last incremental link; performing full link
+  draw.vcxproj -> C:\Users\1000a\source\repos\tp-2022-AgataKra6\Debug\draw2.exe
