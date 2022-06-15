@@ -82,7 +82,7 @@ HWND hwndButton;
 //it's an option but for now I'd say is not essential
 
 RECT Elevator_Shaft = { L_Platform_R, E_Endings, R_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
-RECT StaticDrawArea = { 0, 0, 1500, 1500 };
+RECT StaticDrawArea = { 50, 0, 750, 1500 };
 RECT DrawFloor_1 = { R_Platform_L, Floor_1 - Elevator_Height, R_Platform_R, Floor_1 - 2 };
 RECT DrawFloor_2 = { L_Platform_L, Floor_2 - Elevator_Height, L_Platform_R, Floor_2 - 2 };
 RECT DrawFloor_3 = { R_Platform_L, Floor_3 - Elevator_Height, R_Platform_R, Floor_3 - 2 };
@@ -245,7 +245,6 @@ void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 			}
 	}
 	//draw elevator
-
 	EndPaint(hWnd, &ps);
 }
 
@@ -257,6 +256,7 @@ void PaintElevator(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea) {
 	Graphics graphics(hdc);
 	graphics.DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
 	elevator.position_y -= 2;
+	GdiFlush();
 	EndPaint(hWnd, &ps);
 }
 
@@ -270,19 +270,25 @@ void PaintPeople(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea, std::vect
 	EndPaint(hWnd, &ps);
 }
 
-void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Elevator_Area, RECT* Floor1_Area, RECT* Floor2_Area, RECT* Floor3_Area, RECT* Floor4_Area, RECT* Floor5_Area)
-{
-	MyOnPaint(hdc);
-	hdc = BeginPaint(hWnd, &ps);
+void UpdateDrawing(Bitmap *bmp, RECT* Draw_Area) {
+	Graphics* imageGraphics = Graphics::FromImage(bmp);
+}
 
+void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area, RECT* Elevator_Area, RECT* Floor1_Area, RECT* Floor2_Area, RECT* Floor3_Area, RECT* Floor4_Area, RECT* Floor5_Area, Bitmap *Drawing)
+{
+	
+	MyOnPaint(hdc);
+	UpdateDrawing(Drawing, Static_Area);
+	StaticPaint(hWnd, hdc, ps, Static_Area);
 	PaintElevator(hWnd, hdc, ps, Elevator_Area);
-	PaintPeople(hWnd, hdc, ps, Floor1_Area, floor1_people);
-	PaintPeople(hWnd, hdc, ps, Floor2_Area, floor2_people);
-	PaintPeople(hWnd, hdc, ps, Floor3_Area, floor3_people);
-	PaintPeople(hWnd, hdc, ps, Floor4_Area, floor4_people);
-	PaintPeople(hWnd, hdc, ps, Floor5_Area, floor5_people);
+	//PaintPeople(hWnd, hdc, ps, Floor1_Area, floor1_people);
+	//PaintPeople(hWnd, hdc, ps, Floor2_Area, floor2_people);
+	//PaintPeople(hWnd, hdc, ps, Floor3_Area, floor3_people);
+	//PaintPeople(hWnd, hdc, ps, Floor4_Area, floor4_people);
+	//PaintPeople(hWnd, hdc, ps, Floor5_Area, floor5_people);
 	//PaintPeople(hWnd, hdc, ps, Elevator_Area, elevator.passengers);
-	EndPaint(hWnd, &ps);
+	GdiFlush();
+	
 }
 
 
@@ -649,6 +655,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
+	HDC hdcbuf;
+	Bitmap *bmp = new Bitmap(1500, 1500, PixelFormat32bppARGB);
+
 	Person traveller;
 
 	switch (message)
@@ -802,9 +811,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// TODO: Add any drawing code here (not depend on timer, buttons)
 
 		StaticPaint(hWnd, hdc, ps, &StaticDrawArea);
+		//initialize the hdcbuf
 
 		break;
 	case WM_DESTROY:
+		delete bmp;
 		PostQuitMessage(0);
 		break;
 
@@ -813,7 +824,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case TMR_1:
 			//force window to repaint
-			repaintWindow(hWnd, hdc, ps, &Elevator_Shaft, &DrawFloor_1, &DrawFloor_2, &DrawFloor_3, &DrawFloor_4, &DrawFloor_5);
+			repaintWindow(hWnd, hdc, ps, &StaticDrawArea, &Elevator_Shaft, &DrawFloor_1, &DrawFloor_2, &DrawFloor_3, &DrawFloor_4, &DrawFloor_5, bmp);
 			break;
 		}
 
