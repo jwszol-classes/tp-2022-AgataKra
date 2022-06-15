@@ -103,6 +103,52 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
 
+void InitializeSilhouettes(HWND hWnd, Bitmap* one, Bitmap* two, Bitmap* three, Bitmap* four, Bitmap* five) {
+	Pen Static_Pen(Color(255, 0, 0, 255), 2);
+	Graphics* imageGraphics1 = Graphics::FromImage(one);
+	imageGraphics1->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics1->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics1->DrawLine(&Static_Pen, 5, 25, 5, 45);
+	delete imageGraphics1;
+
+	Graphics* imageGraphics2 = Graphics::FromImage(two);
+	imageGraphics2->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics2->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics2->DrawLine(&Static_Pen, 5, 25, 15, 25);
+	imageGraphics2->DrawLine(&Static_Pen, 15, 25, 15, 35);
+	imageGraphics2->DrawLine(&Static_Pen, 15, 35, 5, 35);
+	imageGraphics2->DrawLine(&Static_Pen, 5, 35, 5, 45);
+	imageGraphics2->DrawLine(&Static_Pen, 5, 45, 15, 45);
+	delete imageGraphics2;
+
+	Graphics* imageGraphics3 = Graphics::FromImage(three);
+	imageGraphics3->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics3->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics3->DrawLine(&Static_Pen, 5, 25, 15, 25);
+	imageGraphics3->DrawLine(&Static_Pen, 15, 25, 15, 45);
+	imageGraphics3->DrawLine(&Static_Pen, 5, 35, 15, 35);
+	imageGraphics3->DrawLine(&Static_Pen, 5, 45, 15, 45);
+	delete imageGraphics3;
+
+	Graphics* imageGraphics4 = Graphics::FromImage(four);
+	imageGraphics4->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics4->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics4->DrawLine(&Static_Pen, 5, 25, 5, 35);
+	imageGraphics4->DrawLine(&Static_Pen, 5, 35, 15, 35);
+	imageGraphics4->DrawLine(&Static_Pen, 15, 25, 15, 45);
+	delete imageGraphics4;
+
+	Graphics* imageGraphics5 = Graphics::FromImage(five);
+	imageGraphics5->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics5->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 25, 15, 25);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 25, 5, 35);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 35, 15, 35);
+	imageGraphics5->DrawLine(&Static_Pen, 15, 35, 15, 45);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 45, 15, 45);
+	delete imageGraphics5;
+}
+
 bool passengers_to_enter() {							//in this function you check if on the current floor anyone needs to enter (returns true in this case)
 	switch (elevator.elevator_position)
 	{
@@ -268,7 +314,6 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 	//PaintElevator(hWnd, hdc, ps, Elevator_Area);
 	Bitmap* bmp = new Bitmap(1500, 1500, PixelFormat32bppARGB);
 
-	InvalidateRect(hWnd, Static_Area, TRUE);
 	hdc = BeginPaint(hWnd, &ps);
 
 	Graphics graphics(hdc);
@@ -701,7 +746,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
-	HDC hdcbuf;
+
+	Bitmap* person_dest1 = new Bitmap(20, 50, PixelFormat32bppARGB);
+	Bitmap* person_dest2 = new Bitmap(20, 50, PixelFormat32bppARGB);
+	Bitmap* person_dest3 = new Bitmap(20, 50, PixelFormat32bppARGB);
+	Bitmap* person_dest4 = new Bitmap(20, 50, PixelFormat32bppARGB);
+	Bitmap* person_dest5 = new Bitmap(20, 50, PixelFormat32bppARGB);
+	InitializeSilhouettes(hWnd, person_dest1, person_dest2, person_dest3, person_dest4, person_dest5);
 
 	Person traveller;
 
@@ -860,6 +911,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		repaintWindow(hWnd, hdc, ps, &StaticDrawArea);
 		break;
 	case WM_DESTROY:
+		delete person_dest1;
+		delete person_dest2;
+		delete person_dest3;
+		delete person_dest4;
+		delete person_dest5;
 		PostQuitMessage(0);
 		break;
 

@@ -1,8 +1,7 @@
 ﻿  draw2.cpp
-C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(139,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(145,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(151,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(157,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(163,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(704,6): warning C4101: 'hdcbuf': unreferenced local variable
+C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(185,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(191,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(197,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(203,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra67\draw\draw2.cpp(209,21): warning C4018: '<': signed/unsigned mismatch
   draw.vcxproj -> C:\Users\1000a\source\repos\tp-2022-AgataKra67\Debug\draw2.exe
