@@ -182,10 +182,10 @@ bool passengers_at_destination() {														//this one checks if people arri
 
 void MyOnPaint(HDC hdc)
 {
-	Graphics graphics(hdc);
-	Pen pen(Color(255, 0, 0, 255));
-	Pen pen2(Color(255, 20, 0, 255));
-	graphics.DrawLine(&pen, 0, 10, 100, 200);
+	//Graphics graphics(hdc);
+	//Pen pen(Color(255, 0, 0, 255));
+	//Pen pen2(Color(255, 20, 0, 255));
+	//graphics.DrawLine(&pen, 0, 10, 100, 200);
 
 	if (elevator.door == CLOSED && elevator.elevator_position == TRANSIT) {		//move up or down between floors
 	}
@@ -211,7 +211,7 @@ void MyOnPaint(HDC hdc)
 	}
 }
 
-
+/*
 void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 {
 	InvalidateRect(hWnd, drawArea, TRUE);
@@ -244,10 +244,11 @@ void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
 				graphics.DrawLine(&Static_Pen, R_Platform_L + 2, (i * Elevator_Height + E_Endings) + 1, R_Platform_L + 2, ((i + 1) * Elevator_Height + E_Endings));
 			}
 	}
+	graphics.DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
 	//draw elevator
 	EndPaint(hWnd, &ps);
-}
-
+}*/
+/*
 void PaintElevator(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea) {
 	InvalidateRect(hWnd, drawArea, TRUE);
 	Pen Static_Pen(Color(255, 0, 0, 255), 3);
@@ -258,37 +259,82 @@ void PaintElevator(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea) {
 	elevator.position_y -= 2;
 	GdiFlush();
 	EndPaint(hWnd, &ps);
-}
+}*/
 
-void PaintPeople(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea, std::vector<Person>people) {
-	InvalidateRect(hWnd, drawArea, TRUE);
-
-	hdc = BeginPaint(hWnd, &ps);
-	Graphics graphics(hdc);
-	Pen pen(Color(255, 0, 0, 100));
-	//graphics.DrawLine(&pen, 0, 0, 1500, 1000);
-	EndPaint(hWnd, &ps);
-}
-
-void UpdateDrawing(Bitmap *bmp, RECT* Draw_Area) {
-	Graphics* imageGraphics = Graphics::FromImage(bmp);
-}
-
-void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area, RECT* Elevator_Area, RECT* Floor1_Area, RECT* Floor2_Area, RECT* Floor3_Area, RECT* Floor4_Area, RECT* Floor5_Area, Bitmap *Drawing)
+void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 {
-	
 	MyOnPaint(hdc);
-	UpdateDrawing(Drawing, Static_Area);
-	StaticPaint(hWnd, hdc, ps, Static_Area);
-	PaintElevator(hWnd, hdc, ps, Elevator_Area);
-	//PaintPeople(hWnd, hdc, ps, Floor1_Area, floor1_people);
-	//PaintPeople(hWnd, hdc, ps, Floor2_Area, floor2_people);
-	//PaintPeople(hWnd, hdc, ps, Floor3_Area, floor3_people);
-	//PaintPeople(hWnd, hdc, ps, Floor4_Area, floor4_people);
-	//PaintPeople(hWnd, hdc, ps, Floor5_Area, floor5_people);
-	//PaintPeople(hWnd, hdc, ps, Elevator_Area, elevator.passengers);
-	GdiFlush();
+	//StaticPaint(hWnd, hdc, ps, Static_Area);
+	//PaintElevator(hWnd, hdc, ps, Elevator_Area);
+	Bitmap* bmp = new Bitmap(1500, 1500, PixelFormat32bppARGB);
+
+	InvalidateRect(hWnd, Static_Area, TRUE);
+	hdc = BeginPaint(hWnd, &ps);
+
+	Graphics graphics(hdc);
 	
+	Graphics* imageGraphics = Graphics::FromImage(bmp);
+	Pen Static_Pen(Color(255, 0, 0, 255), 3);
+	
+	//draw everything to image graphics
+
+	for (int i = 0; i <= Number_Of_Floors; i++) {
+
+		if (i % 2 == 0) //Left Side of the elevator
+			if (i == 0) {			//upper end and floor
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, E_Endings / 2, L_Platform_R - 2, Floor_5);
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L - 2, (E_Endings / 2), R_Platform_L - 2, E_Endings);
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (E_Endings / 2) - 1, R_Platform_L, (E_Endings / 2) - 1);
+			}
+			else {
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, L_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, ((i - 1) * Elevator_Height + Floor_5), L_Platform_R - 2, i * Elevator_Height + Floor_5);
+			}
+		else
+			if (i == 5) {
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, i * Elevator_Height + E_Endings, L_Platform_R - 2, i * Elevator_Height + 2 * E_Endings);
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_L + 1, (i * Elevator_Height + 2 * E_Endings));
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1, R_Platform_L + Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1);
+			}
+			else {
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_R, (i * Elevator_Height + E_Endings));
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 2, (i * Elevator_Height + E_Endings) + 1, R_Platform_L + 2, ((i + 1) * Elevator_Height + E_Endings));
+			}
+	}
+	imageGraphics->DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
+	elevator.position_y -= 2;	//this is just for testing 
+
+	for (int i = 0; i < sizeof(floor1_people); i++) {
+
+	}
+	for (int i = 0; i < sizeof(floor2_people); i++) {
+
+	}
+	for (int i = 0; i < sizeof(floor3_people); i++) {
+
+	}
+	for (int i = 0; i < sizeof(floor4_people); i++) {
+
+	}
+	for (int i = 0; i < sizeof(floor5_people); i++) {
+
+	}
+	for (int i = 0; i < sizeof(elevator.passengers); i++) {
+
+	}
+
+	//end of drawing
+
+	graphics.DrawImage(bmp, 0, 0);
+
+	//this method also slow
+	//TextureBrush* myBrush = new TextureBrush(bmp);
+	//graphics.FillRectangle(myBrush, 0, 0, 1500, 1500);
+
+	EndPaint(hWnd, &ps);
+	delete imageGraphics;
+	delete bmp;
 }
 
 
@@ -656,14 +702,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	HDC hdcbuf;
-	Bitmap *bmp = new Bitmap(1500, 1500, PixelFormat32bppARGB);
 
 	Person traveller;
 
 	switch (message)
 	{
 	case WM_CREATE:
-		SetTimer(hWnd, TMR_1, 40, 0);									//timer for animation is set up here, 40ms per frame
+		SetTimer(hWnd, TMR_1, 50, 0);									//timer for animation is set up here, 40ms per frame
 		break;
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);
@@ -807,15 +852,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
 		break;
+
 	case WM_PAINT:
 		// TODO: Add any drawing code here (not depend on timer, buttons)
 
-		StaticPaint(hWnd, hdc, ps, &StaticDrawArea);
-		//initialize the hdcbuf
-
+		//StaticPaint(hWnd, hdc, ps, &StaticDrawArea);
+		repaintWindow(hWnd, hdc, ps, &StaticDrawArea);
 		break;
 	case WM_DESTROY:
-		delete bmp;
 		PostQuitMessage(0);
 		break;
 
@@ -824,7 +868,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case TMR_1:
 			//force window to repaint
-			repaintWindow(hWnd, hdc, ps, &StaticDrawArea, &Elevator_Shaft, &DrawFloor_1, &DrawFloor_2, &DrawFloor_3, &DrawFloor_4, &DrawFloor_5, bmp);
+			InvalidateRect(hWnd, &StaticDrawArea, TRUE);
 			break;
 		}
 
