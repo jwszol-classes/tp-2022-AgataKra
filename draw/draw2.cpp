@@ -408,12 +408,24 @@ void elevator_control(HDC hdc) {
 		else if (elevator.passengers[j].destination == FLOOR5)
 			Passanger_To_5++;
 	}
+	if (elevator.elevator_position == FLOOR4)
+		if (Passanger_To_5 == 0)
+			elevator.direction = DOWN;
+	if (elevator.elevator_position == FLOOR3) {
+		if (Passanger_To_1 == 0 && Passanger_To_2)
+			elevator.direction = UP;
+		if (Passanger_To_5 && Passanger_To_4)
+			elevator.direction = DOWN;
+	}
+	if (elevator.elevator_position == FLOOR2)
+		if (Passanger_To_1 == 0)
+			elevator.direction = UP;
 
 	if (elevator.elevator_position == FLOOR5)
 		elevator.direction = DOWN;
 	if (elevator.elevator_position == FLOOR1)
 		elevator.direction = UP;
-
+	
 	if (elevator.direction == UP) {				//move elevator down
 		elevator.elevator_position = TRANSIT;
 		elevator.position_y += Elevator_Speed;
