@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\draw"
   ],
-  "SelectedNode": "\\draw2.sln",
+  "SelectedNode": "\\draw\\draw2.cpp",
   "PreviewInSolutionExplorer": false
 }

@@ -5,6 +5,7 @@
 #include "draw2.h"
 #include <vector>
 #include <cstdio>
+#include <string>
 
 #define MAX_LOADSTRING 100
 #define TMR_1 1
@@ -303,9 +304,9 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 			}
 	}
 	imageGraphics->DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
-	elevator.position_y -= 2;	//this is just for testing 
+	//elevator.position_y -= 2;	//this is just for testing 
 
-	/*
+	
 	for (int i = 0; i < sizeof(floor1_people); i++) {
 		if (floor1_people[i].destination == FLOOR2)
 			imageGraphics->FillRectangle(Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
@@ -367,7 +368,20 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 			imageGraphics->FillRectangle(Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
 		if (floor1_people[i].destination == FLOOR5)
 			imageGraphics->FillRectangle(Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
-	}*/
+	}
+
+	FontFamily   fontFamily(L"Arial");
+	Font         font(&fontFamily, 12, FontStyleRegular, UnitPoint);
+	PointF      pointF(20, 20);
+	PointF      pointG(150, 20);
+	SolidBrush  solidBrush(Color(255, 0, 0, 255));
+
+	int weight = 70 * sizeof(elevator.passengers);
+	wchar_t current_weight[10];
+	swprintf_s(current_weight, L"%d", weight);
+
+	imageGraphics->DrawString(L"Waga w windzie: ", -1, &font, pointF, &solidBrush);
+	imageGraphics->DrawString(current_weight, -1, &font, pointG, &solidBrush);
 	
 	graphics.DrawImage(bmp, 0, 0);
 
