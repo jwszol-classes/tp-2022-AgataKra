@@ -5,6 +5,7 @@
 #include "draw2.h"
 #include <vector>
 #include <cstdio>
+#include <string>
 
 #define MAX_LOADSTRING 100
 #define TMR_1 1
@@ -63,8 +64,12 @@ struct Elevator {
 	int current_weight = 0;
 	DoorState door = CLOSED;
 	Position elevator_position = FLOOR1;
+
+	int position_y = Floor_1;
+
 	int position_y = 0;
 	bool Spots[8] = {false, false , false , false , false , false , false , false};
+
 };
 
 Elevator elevator;
@@ -85,22 +90,76 @@ HWND hwndButton;
 //Fit the elevator in the Elevator_Shaft, we'd have to employ some additional drawing areas to have the "shell" walls also open
 //it's an option but for now I'd say is not essential
 
-RECT Elevator_Shaft = { L_Platform_R + 2, E_Endings, R_Platform_L - 1, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
-RECT StaticDrawArea = { 0, 0, 1500, 1500 };
+RECT Elevator_Shaft = { L_Platform_R, E_Endings, R_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
+RECT StaticDrawArea = { 50, 0, 750, 1500 };
 
-//input the areas per floor here:
-RECT Floor1 = {};
-RECT Floor2 = {};
-RECT Floor3 = {};
-RECT Floor4 = {};
-RECT Floor5 = {};
-
+/*Im might try to fix bitmaps but this is hell
+Bitmap* person_dest1 = new Bitmap(20, 50, PixelFormat32bppARGB);
+Bitmap* person_dest2 = new Bitmap(20, 50, PixelFormat32bppARGB);
+Bitmap* person_dest3 = new Bitmap(20, 50, PixelFormat32bppARGB);
+Bitmap* person_dest4 = new Bitmap(20, 50, PixelFormat32bppARGB);
+Bitmap* person_dest5 = new Bitmap(20, 50, PixelFormat32bppARGB);
+*/
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
+/*
+void InitializeSilhouettes(HWND hWnd, Bitmap* one, Bitmap* two, Bitmap* three, Bitmap* four, Bitmap* five) {
+	HDC hdcbuf = CreateCompatibleDC(NULL);
+	PAINTSTRUCT ps;
+	hdcbuf = BeginPaint(hWnd, &ps);
+
+	Pen Static_Pen(Color(255, 0, 0, 255), 2);
+	Graphics* imageGraphics1 = Graphics::FromImage(one);
+	imageGraphics1->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics1->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics1->DrawLine(&Static_Pen, 5, 25, 5, 45);
+	delete imageGraphics1;
+
+	Graphics* imageGraphics2 = Graphics::FromImage(two);
+	imageGraphics2->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics2->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics2->DrawLine(&Static_Pen, 5, 25, 15, 25);
+	imageGraphics2->DrawLine(&Static_Pen, 15, 25, 15, 35);
+	imageGraphics2->DrawLine(&Static_Pen, 15, 35, 5, 35);
+	imageGraphics2->DrawLine(&Static_Pen, 5, 35, 5, 45);
+	imageGraphics2->DrawLine(&Static_Pen, 5, 45, 15, 45);
+	delete imageGraphics2;
+
+	Graphics* imageGraphics3 = Graphics::FromImage(three);
+	imageGraphics3->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics3->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics3->DrawLine(&Static_Pen, 5, 25, 15, 25);
+	imageGraphics3->DrawLine(&Static_Pen, 15, 25, 15, 45);
+	imageGraphics3->DrawLine(&Static_Pen, 5, 35, 15, 35);
+	imageGraphics3->DrawLine(&Static_Pen, 5, 45, 15, 45);
+	delete imageGraphics3;
+
+	Graphics* imageGraphics4 = Graphics::FromImage(four);
+	imageGraphics4->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics4->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics4->DrawLine(&Static_Pen, 5, 25, 5, 35);
+	imageGraphics4->DrawLine(&Static_Pen, 5, 35, 15, 35);
+	imageGraphics4->DrawLine(&Static_Pen, 15, 25, 15, 45);
+	delete imageGraphics4;
+
+	Graphics* imageGraphics5 = Graphics::FromImage(five);
+	imageGraphics5->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
+	imageGraphics5->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 25, 15, 25);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 25, 5, 35);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 35, 15, 35);
+	imageGraphics5->DrawLine(&Static_Pen, 15, 35, 15, 45);
+	imageGraphics5->DrawLine(&Static_Pen, 5, 45, 15, 45);
+	delete imageGraphics5;
+
+
+	EndPaint(hWnd, &ps);
+}
+*/
 
 bool passengers_waiting() {
 	if (floor1_people.size() != 0 && floor2_people.size() != 0 && floor3_people.size() != 0 && floor4_people.size() != 0 && floor5_people.size() != 0)
@@ -501,61 +560,147 @@ void MyOnPaint(HDC hdc)
 	elevator_control(hdc);
 }
 
-//for now repaintwindow just has a test animation TO DO:
-void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
-{
-	InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
-	hdc = BeginPaint(hWnd, &ps);
-	MyOnPaint(hdc);
-	EndPaint(hWnd, &ps);
-}
 
-void StaticPaint(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* drawArea)
+void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 {
-	InvalidateRect(hWnd, drawArea, TRUE);
+	MyOnPaint(hdc);
+	Bitmap* bmp = new Bitmap(1500, 1500, PixelFormat32bppARGB);
+
 	hdc = BeginPaint(hWnd, &ps);
 
 	Graphics graphics(hdc);
-	Pen pen(Color(255, 0, 0, 255));
-	Pen pen2(Color(255, 25, 0, 255));
+	
+	Graphics* imageGraphics = Graphics::FromImage(bmp);
+	Pen Static_Pen(Color(255, 0, 0, 255), 3);
+	
+	SolidBrush * Pen1 = new SolidBrush(Color(255, 255, 0, 255));				//RGB
+	SolidBrush * Pen2 = new SolidBrush(Color(255, 0, 255, 255));
+	SolidBrush * Pen3 = new SolidBrush(Color(255, 255, 255, 0));
+	SolidBrush * Pen4 = new SolidBrush(Color(255, 255, 0, 0));
+	SolidBrush * Pen5 = new SolidBrush(Color(255, 0, 255, 0));
+	
+	//draw everything to image graphics
 
 	for (int i = 0; i <= Number_Of_Floors; i++) {
 
 		if (i % 2 == 0) //Left Side of the elevator
-			if (i == 0) {
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, L_Platform_R - 2 + j, E_Endings / 2, L_Platform_R - 2 + j, Floor_5);
-					graphics.DrawLine(&pen, R_Platform_L - 1 + j, (E_Endings / 2), R_Platform_L - 1 + j, E_Endings);
-					graphics.DrawLine(&pen, L_Platform_R, (E_Endings / 2) - 1 + j, R_Platform_L, (E_Endings / 2) - 1 + j);
-				}
+
+			if (i == 0) {			//upper end and floor
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, E_Endings / 2, L_Platform_R - 2, Floor_5);
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L - 2, (E_Endings / 2), R_Platform_L - 2, E_Endings);
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (E_Endings / 2) - 1, R_Platform_L, (E_Endings / 2) - 1);
 			}
 			else {
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, L_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, L_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
-					graphics.DrawLine(&pen, L_Platform_R - 2 + j, ((i - 1) * Elevator_Height + Floor_5), L_Platform_R - 2 + j, i * Elevator_Height + Floor_5);
-				}
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, L_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, ((i - 1) * Elevator_Height + Floor_5), L_Platform_R - 2, i * Elevator_Height + Floor_5);
 			}
 		else
-			if (i == 5)
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, R_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1 + j, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1 + j);
-					graphics.DrawLine(&pen, L_Platform_R - 2 + j, i * Elevator_Height + E_Endings, L_Platform_R - 2 + j, i * Elevator_Height + 2 * E_Endings);
-					graphics.DrawLine(&pen, R_Platform_L - 1 + j, (i * Elevator_Height + E_Endings) + j, R_Platform_L - 1 + j, (i * Elevator_Height + 2 * E_Endings) + j);
-					graphics.DrawLine(&pen, L_Platform_R, (i * Elevator_Height + 2 * E_Endings) - 1 + j, R_Platform_L, (i * Elevator_Height + 2 * E_Endings) - 1 + j);
-				}
-			else
-				for (int j = 1; j < Platform_Height + 1; j++) {
-					graphics.DrawLine(&pen, R_Platform_L, (i * Elevator_Height + E_Endings) + j, R_Platform_R, (i * Elevator_Height + E_Endings) + j);
-					graphics.DrawLine(&pen, R_Platform_L + 2 - j, (i * Elevator_Height + E_Endings) + 1, R_Platform_L + 2 - j, ((i + 1) * Elevator_Height + E_Endings));
-				}
 
+			if (i == 5) {
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, i * Elevator_Height + E_Endings, L_Platform_R - 2, i * Elevator_Height + 2 * E_Endings);
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_L + 1, (i * Elevator_Height + 2 * E_Endings));
+				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1, R_Platform_L + Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1);
+			}
+			else {
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_R, (i * Elevator_Height + E_Endings));
+				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 2, (i * Elevator_Height + E_Endings) + 1, R_Platform_L + 2, ((i + 1) * Elevator_Height + E_Endings));
+			}
 	}
+	imageGraphics->DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
+	//elevator.position_y -= 2;	//this is just for testing 
+
+	
+	for (int i = 0; i < sizeof(floor1_people); i++) {
+		if (floor1_people[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+	}
+	for (int i = 0; i < sizeof(floor2_people); i++) {
+		if (floor1_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+	}
+	for (int i = 0; i < sizeof(floor3_people); i++) {
+		if (floor1_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR2)
+			imageGraphics->Fillectangle(Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+	}
+	for (int i = 0; i < sizeof(floor4_people); i++) {
+		if (floor1_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+	}
+	for (int i = 0; i < sizeof(floor5_people); i++) {
+		if (floor1_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+	}
+	for (int i = 0; i < sizeof(elevator.passengers); i++) {
+		if (floor1_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+		if (floor1_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, floor1_people[i].position_x + 20, floor1_people[i].position_y);
+	}
+
+	FontFamily   fontFamily(L"Arial");
+	Font         font(&fontFamily, 12, FontStyleRegular, UnitPoint);
+	PointF      pointF(20, 20);
+	PointF      pointG(150, 20);
+	SolidBrush  solidBrush(Color(255, 0, 0, 255));
+
+	int weight = 70 * sizeof(elevator.passengers);
+	wchar_t current_weight[10];
+	swprintf_s(current_weight, L"%d", weight);
+
+	imageGraphics->DrawString(L"Waga w windzie: ", -1, &font, pointF, &solidBrush);
+	imageGraphics->DrawString(current_weight, -1, &font, pointG, &solidBrush);
+	
+	graphics.DrawImage(bmp, 0, 0);
+
+	//this method also slow
+	//TextureBrush* myBrush = new TextureBrush(bmp);
+	//graphics.FillRectangle(myBrush, 0, 0, 1500, 1500);
+
 	EndPaint(hWnd, &ps);
+	delete imageGraphics;
+	delete bmp;
 }
+
 
 int OnCreate(HWND window)
 {
-	//inputData();
 	return 0;
 }
 
@@ -878,15 +1023,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		hInstance,
 		NULL);
 
-	// create button and store the handle                                                       
-
-	/*hwndButton = CreateWindow(TEXT("button"), TEXT("Timer ON"),
-		WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-		300, 155, 100, 30, hWnd, (HMENU)ID_RBUTTON1, GetModuleHandle(NULL), NULL);
-	hwndButton = CreateWindow(TEXT("button"), TEXT("Timer OFF"),
-		WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-		300, 200, 100, 30, hWnd, (HMENU)ID_RBUTTON2, GetModuleHandle(NULL), NULL);*/
-
 	OnCreate(hWnd);
 
 	if (!hWnd)
@@ -915,12 +1051,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
+
 	Person traveller;
+
+	//InitializeSilhouettes(hWnd, person_dest1, person_dest2, person_dest3, person_dest4, person_dest5);
 
 	switch (message)
 	{
 	case WM_CREATE:
-		SetTimer(hWnd, TMR_1, 25, 0);									//timer for animation is set up here, 25ms per frame
+		SetTimer(hWnd, TMR_1, 50, 0);									//timer for animation is set up here, 50ms per frame
 		break;
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);
@@ -936,6 +1075,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;
+
 		case ID_BUTTON1_2:								//floor1
 			traveller.person_position = FLOOR1;
 			traveller.destination = FLOOR2;
@@ -1104,13 +1244,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
 		break;
+
 	case WM_PAINT:
 		// TODO: Add any drawing code here (not depend on timer, buttons)
 
-		StaticPaint(hWnd, hdc, ps, &StaticDrawArea);
-
+		//StaticPaint(hWnd, hdc, ps, &StaticDrawArea);
+		repaintWindow(hWnd, hdc, ps, &StaticDrawArea);
 		break;
 	case WM_DESTROY:
+		//delete person_dest1;
+		//delete person_dest2;
+		//delete person_dest3;
+		//delete person_dest4;
+		//delete person_dest5;
 		PostQuitMessage(0);
 		break;
 
@@ -1119,7 +1265,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case TMR_1:
 			//force window to repaint
-			repaintWindow(hWnd, hdc, ps, &Elevator_Shaft);
+			InvalidateRect(hWnd, &StaticDrawArea, TRUE);
 			break;
 		}
 
