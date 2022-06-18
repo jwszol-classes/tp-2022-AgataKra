@@ -488,6 +488,8 @@ void elevator_control(HDC hdc) {
 	if (elevator.direction == UP) {				//move elevator down
 		elevator.elevator_position = TRANSIT;
 		elevator.position_y += Elevator_Speed;
+		for (int i = 0; i < elevator.passengers.size(); i++)
+			elevator.passengers[i].position_y = elevator.position_y;
 		if (elevator.position_y == FLOOR5) {
 			elevator.elevator_position = FLOOR5;
 			return;
@@ -509,6 +511,8 @@ void elevator_control(HDC hdc) {
 	else if (elevator.direction == DOWN) {		//move elevator up
 		elevator.elevator_position = TRANSIT;
 		elevator.position_y -= Elevator_Speed;
+		for (int i = 0; i < elevator.passengers.size(); i++)
+			elevator.passengers[i].position_y = elevator.position_y;
 		if (elevator.position_y == FLOOR4) {
 			elevator.elevator_position = FLOOR4;
 			return;
