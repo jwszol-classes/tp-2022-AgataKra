@@ -530,42 +530,11 @@ void elevator_control(HDC hdc) {
 	}
 }
 
-void MyOnPaint(HDC hdc)
-{
-	Graphics graphics(hdc);
-	Pen pen(Color(255, 0, 0, 255));
-	Pen pen2(Color(255, 20, 0, 255));
-	graphics.DrawLine(&pen, 0, 10, 100, 200);
-
-	if (elevator.door == CLOSED && elevator.elevator_position == TRANSIT) {		//move up or down between floors
-	}
-
-	else if (elevator.door == CLOSED && elevator.direction == NONE) {			//dont move if no direction
-	}
-
-	else if (elevator.door == CLOSED && (passengers_to_depart() || passengers_to_enter())) {	//are the doors supposed to open? (to let people out or in) if so open doors 
-	}
-
-	else if (elevator.door == OPEN && passengers_to_depart()) {		//let people out
-	}
-
-	else if (elevator.door == OPEN && passengers_to_enter() && !passengers_to_depart()) {	//is anyone going into the elevator? (let people in)
-	}
-
-	else if (elevator.door == OPEN && !passengers_to_enter() && !passengers_to_depart()) {	//is everyone in/out as needed? if so close doors
-	}
-
-	else if (elevator.door == CLOSED && !passengers_to_enter() && !passengers_to_depart()) {	//if elevator on floor with doors closed, move elevator in the needed direction
-		if (elevator.direction == UP) {}
-		else if (elevator.direction == DOWN) {}
-	}
-	elevator_control(hdc);
-}
 
 
 void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 {
-	MyOnPaint(hdc);
+	elevator_control(hdc);
 	Bitmap* bmp = new Bitmap(1500, 1500, PixelFormat32bppARGB);
 
 	hdc = BeginPaint(hWnd, &ps);
