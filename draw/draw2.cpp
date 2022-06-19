@@ -573,64 +573,64 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 	for (int i = 0; i < floor1_people.size(); i++) {
 		if (floor1_people[i].destination == FLOOR2)
 			imageGraphics->FillRectangle(&Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR3)
+		else if (floor1_people[i].destination == FLOOR3)
 			imageGraphics->FillRectangle(&Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR4)
+		else if (floor1_people[i].destination == FLOOR4)
 			imageGraphics->FillRectangle(&Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR5)
+		else if (floor1_people[i].destination == FLOOR5)
 			imageGraphics->FillRectangle(&Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
 	}
 	for (int i = 0; i < floor2_people.size(); i++) {
-		if (floor1_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+		if (floor2_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(&Pen1, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
+		else if (floor2_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(&Pen3, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
+		else if (floor2_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(&Pen4, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
+		else if (floor2_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(&Pen5, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
 	}
 	for (int i = 0; i < floor3_people.size(); i++) {
-		if (floor1_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+		if (floor3_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(&Pen1, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
+		else if (floor3_people[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(&Pen2, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
+		else if (floor3_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(&Pen4, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
+		else if (floor3_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(&Pen5, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
 	}
 	for (int i = 0; i < floor4_people.size(); i++) {
-		if (floor1_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+		if (floor4_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(&Pen1, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
+		else if (floor4_people[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(&Pen2, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
+		else if (floor4_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(&Pen3, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
+		else if (floor4_people[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(&Pen5, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
 	}
 	for (int i = 0; i < floor5_people.size(); i++) {
-		if (floor1_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+		if (floor5_people[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(&Pen1, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
+		else if (floor5_people[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(&Pen2, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
+		else if (floor5_people[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(&Pen3, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
+		else if (floor5_people[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(&Pen4, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
 	}
 	for (int i = 0; i < elevator.passengers.size(); i++) {
-		if (floor1_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
-		if (floor1_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+		if (elevator.passengers[i].destination == FLOOR1)
+			imageGraphics->FillRectangle(&Pen1, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+		else if (elevator.passengers[i].destination == FLOOR2)
+			imageGraphics->FillRectangle(&Pen2, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+		else if (elevator.passengers[i].destination == FLOOR3)
+			imageGraphics->FillRectangle(&Pen3, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+		else if (elevator.passengers[i].destination == FLOOR4)
+			imageGraphics->FillRectangle(&Pen4, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+		else if (elevator.passengers[i].destination == FLOOR5)
+			imageGraphics->FillRectangle(&Pen5, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
 	}
 	
 	FontFamily   fontFamily(L"Arial");
