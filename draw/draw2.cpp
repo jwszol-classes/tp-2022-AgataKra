@@ -319,7 +319,6 @@ void elevator_control(HDC hdc) {
 		}
 	}
 	if (passengers_to_enter()) {
-		elevator.direction = NONE;
 		switch (elevator.elevator_position) {
 		case FLOOR5:
 			for (int i = 0; i < floor5_people.size(); i++) {
@@ -329,7 +328,7 @@ void elevator_control(HDC hdc) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
 								floor5_people[i].Elevator_Spot = j;
-								break;									//If something's wrong with elevator spots check here
+								return;									//If something's wrong with elevator spots check here
 							}
 						}
 					}
@@ -356,7 +355,7 @@ void elevator_control(HDC hdc) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
 								floor4_people[i].Elevator_Spot = j;
-								break;									//If something's wrong with elevator spots check here
+								return;									//If something's wrong with elevator spots check here
 							}
 						}
 					}
@@ -383,7 +382,7 @@ void elevator_control(HDC hdc) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
 								floor3_people[i].Elevator_Spot = j;
-								break;									//If something's wrong with elevator spots check here
+								return;									//If something's wrong with elevator spots check here
 							}
 						}
 					}
@@ -411,7 +410,7 @@ void elevator_control(HDC hdc) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
 								floor2_people[i].Elevator_Spot = j;
-								break;									//If something's wrong with elevator spots check here
+								return;									//If something's wrong with elevator spots check here
 							}
 						}
 					}
@@ -439,7 +438,7 @@ void elevator_control(HDC hdc) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
 								floor1_people[i].Elevator_Spot = j;
-								break;									//If something's wrong with elevator spots check here
+								return;									//If something's wrong with elevator spots check here
 							}
 						}
 					}
@@ -462,10 +461,10 @@ void elevator_control(HDC hdc) {
 	}
 
 	if (elevator.direction != NONE) {
-		if (elevator.elevator_position == FLOOR5)
-			(elevator.direction = DOWN) && (elevator.previous_direction = elevator.direction);
-		else if (elevator.elevator_position == FLOOR1)
+		if (elevator.elevator_position == FLOOR1)
 			(elevator.direction = UP) && (elevator.previous_direction = elevator.direction);
+		else if (elevator.elevator_position == FLOOR5)
+			(elevator.direction = DOWN) && (elevator.previous_direction = elevator.direction);
 	}
 
 	if (elevator.direction == UP) {				//move elevator down
