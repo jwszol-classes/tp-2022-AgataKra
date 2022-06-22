@@ -328,7 +328,7 @@ void elevator_control(HDC hdc) {
 						floor5_people[i].position_x -= Traveller_Speed;
 						int k = floor5_people[i].Elevator_Spot;
 						if (floor5_people[i].position_x - (E_spot[k]) >= -20 && floor5_people[i].position_x - (E_spot[k]) <= 20)  //iF ERROR IN FUTUR STOTS CAN BE TABLE
-							floor5_people[i].position_x = E_spot[k];					//ASLO DONT CHECK BOTH ^	(just check both, "it just works" ~Todd Haward
+							floor5_people[i].position_x = E_spot[k];
 						return;
 					}
 					else {
@@ -354,7 +354,7 @@ void elevator_control(HDC hdc) {
 					if (!passengers_in_elevator()) {
 						floor4_people[i].position_x += Traveller_Speed;
 						int k = floor4_people[i].Elevator_Spot;
-						if (floor4_people[i].position_x - (E_spot[k]) <= -20 && floor4_people[i].position_x - (E_spot[k]) >= 20)
+						if ((E_spot[k]) - floor4_people[i].position_x >= -20 && (E_spot[k]) - floor4_people[i].position_x <= 20)
 							floor4_people[i].position_x = E_spot[k];
 						return;
 					}
@@ -409,7 +409,7 @@ void elevator_control(HDC hdc) {
 					if (!passengers_in_elevator()) {
 						floor2_people[i].position_x += Traveller_Speed;
 						int k = floor2_people[i].Elevator_Spot;
-						if (floor2_people[i].position_x - (E_spot[k]) <= -20 && floor2_people[i].position_x - (E_spot[k]) >= 20)
+						if (floor2_people[i].position_x - (E_spot[k]) >= -20 && floor2_people[i].position_x - (E_spot[k]) <= 20)
 							floor2_people[i].position_x = E_spot[k];
 						return;
 					}
