@@ -327,7 +327,7 @@ void elevator_control(HDC hdc) {
 					if (!passengers_in_elevator()) {
 						floor5_people[i].position_x -= Traveller_Speed;
 						int k = floor5_people[i].Elevator_Spot;
-						if (floor5_people[i].position_x - (E_spot[k]) >= -20 && floor5_people[i].position_x - (E_spot[k]) <= 20)  //iF ERROR IN FUTUR STOTS CAN BE TABLE
+						if (floor5_people[i].position_x <= (E_spot[k]))
 							floor5_people[i].position_x = E_spot[k];
 						return;
 					}
@@ -354,7 +354,7 @@ void elevator_control(HDC hdc) {
 					if (!passengers_in_elevator()) {
 						floor4_people[i].position_x += Traveller_Speed;
 						int k = floor4_people[i].Elevator_Spot;
-						if ((E_spot[k]) - floor4_people[i].position_x >= -20 && (E_spot[k]) - floor4_people[i].position_x <= 20)
+						if (floor4_people[i].position_x >= (E_spot[k]))
 							floor4_people[i].position_x = E_spot[k];
 						return;
 					}
@@ -381,7 +381,7 @@ void elevator_control(HDC hdc) {
 					if (!passengers_in_elevator()) {
 						floor3_people[i].position_x -= Traveller_Speed;
 						int k = floor3_people[i].Elevator_Spot;
-						if (floor3_people[i].position_x - (E_spot[k]) >= -20 && floor3_people[i].position_x - (E_spot[k]) <= 20)
+						if (floor3_people[i].position_x <= (E_spot[k]))
 							floor3_people[i].position_x = E_spot[k];
 						return;
 					}
@@ -409,7 +409,7 @@ void elevator_control(HDC hdc) {
 					if (!passengers_in_elevator()) {
 						floor2_people[i].position_x += Traveller_Speed;
 						int k = floor2_people[i].Elevator_Spot;
-						if (floor2_people[i].position_x - (E_spot[k]) >= -20 && floor2_people[i].position_x - (E_spot[k]) <= 20)
+						if (floor2_people[i].position_x >= (E_spot[k]))
 							floor2_people[i].position_x = E_spot[k];
 						return;
 					}
@@ -437,7 +437,7 @@ void elevator_control(HDC hdc) {
 					if (!passengers_in_elevator()) {
 						floor1_people[i].position_x -= Traveller_Speed;
 						int k = floor1_people[i].Elevator_Spot;
-						if (floor1_people[i].position_x - (E_spot[k]) >= -20 && floor1_people[i].position_x - (E_spot[k]) <= 20)
+						if (floor1_people[i].position_x <= (E_spot[k]))
 							floor1_people[i].position_x = E_spot[k];
 						return;
 					}
