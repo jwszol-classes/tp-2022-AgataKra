@@ -18,10 +18,10 @@ C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(398,22): warning 
 C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(426,22): warning C4018: '<': signed/unsigned mismatch
 C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(502,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(521,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(620,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(630,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(640,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(650,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(660,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(670,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(614,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(624,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(634,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(644,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(654,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\1000a\source\repos\tp-2022-AgataKra32r\draw\draw2.cpp(664,20): warning C4018: '<': signed/unsigned mismatch
   draw.vcxproj -> C:\Users\1000a\source\repos\tp-2022-AgataKra32r\Debug\draw2.exe
