@@ -153,7 +153,7 @@ void InitializeSilhouettes(HWND hWnd, Bitmap* one, Bitmap* two, Bitmap* three, B
 */
 
 bool passengers_waiting() {
-	if (floor1_people.size() != 0 && floor2_people.size() != 0 && floor3_people.size() != 0 && floor4_people.size() != 0 && floor5_people.size() != 0)
+	if (floor1_people.size() != 0 || floor2_people.size() != 0 || floor3_people.size() != 0 || floor4_people.size() != 0 || floor5_people.size() != 0)
 		return true;
 	else return false;
 }
@@ -305,6 +305,7 @@ void elevator_control(HDC hdc) {
 				elevator.Spots[j] = false;
 				elevator.passengers.erase(elevator.passengers.begin() + i);
 				elevator.current_weight -= 70;
+				return;
 			}
 			else
 				i++;
@@ -314,35 +315,33 @@ void elevator_control(HDC hdc) {
 		switch (elevator.elevator_position) {
 		case FLOOR5:
 			for (int i = 0; i < floor5_people.size(); i++) {
-				if (floor5_people[i].destination_direction == elevator.previous_direction) {
-					if (floor5_people[i].Elevator_Spot == NULL) {
-						for (int j = 0; j < 8; j++) {
-							if (elevator.Spots[j] == false) {
-								elevator.Spots[j] = true;
-								floor5_people[i].Elevator_Spot = j;
-								return;									//If something's wrong with elevator spots check here
-							}
+				if (floor5_people[i].Elevator_Spot == NULL) {
+					for (int j = 0; j < 8; j++) {
+						if (elevator.Spots[j] == false) {
+							elevator.Spots[j] = true;
+							floor5_people[i].Elevator_Spot = j;
+							return;									//If something's wrong with elevator spots check here
 						}
 					}
-					if (!passengers_in_elevator()) {
-						floor5_people[i].position_x -= Traveller_Speed;
-						int k = floor5_people[i].Elevator_Spot;
-						if (floor5_people[i].position_x <= (E_spot[k]))
-							floor5_people[i].position_x = E_spot[k];
-						return;
-					}
-					else {
-						elevator.passengers.push_back(floor5_people[i]);
-						elevator.current_weight += 70;
-						floor5_people.erase(floor5_people.begin() + i);
-					}
+				}
+				if (!passengers_in_elevator()) {
+					floor5_people[i].position_x -= Traveller_Speed;
+					int k = floor5_people[i].Elevator_Spot;
+					if (floor5_people[i].position_x <= (E_spot[k]))
+						floor5_people[i].position_x = E_spot[k];
+					return;
+				}
+				else {
+					elevator.passengers.push_back(floor5_people[i]);
+					elevator.current_weight += 70;
+					floor5_people.erase(floor5_people.begin() + i);
 				}
 			}
 			break;
 		case FLOOR4:
 			for (int i = 0; i < floor4_people.size(); i++) {
-				if (floor4_people[i].Elevator_Spot == NULL) {
-					if (floor4_people[i].destination_direction == elevator.previous_direction) {
+				if (floor4_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
+					if (floor4_people[i].Elevator_Spot == NULL) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
@@ -364,11 +363,12 @@ void elevator_control(HDC hdc) {
 						floor4_people.erase(floor4_people.begin() + i);
 					}
 				}
+
 			}
 			break;
 		case FLOOR3:
 			for (int i = 0; i < floor3_people.size(); i++) {
-				if (floor3_people[i].destination_direction == elevator.previous_direction) {
+				if (floor3_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
 					if (floor3_people[i].Elevator_Spot == NULL) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
@@ -396,7 +396,7 @@ void elevator_control(HDC hdc) {
 			break;
 		case FLOOR2:
 			for (int i = 0; i < floor2_people.size(); i++) {
-				if (floor2_people[i].destination_direction == elevator.previous_direction) {
+				if (floor2_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
 					if (floor2_people[i].Elevator_Spot == NULL) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
@@ -424,78 +424,94 @@ void elevator_control(HDC hdc) {
 			break;
 		case FLOOR1:
 			for (int i = 0; i < floor1_people.size(); i++) {
-				if (floor1_people[i].destination_direction == elevator.previous_direction) {
-					if (floor1_people[i].Elevator_Spot == NULL) {
-						for (int j = 0; j < 8; j++) {
-							if (elevator.Spots[j] == false) {
-								elevator.Spots[j] = true;
-								floor1_people[i].Elevator_Spot = j;
-								return;									//If something's wrong with elevator spots check here
-							}
+				if (floor1_people[i].Elevator_Spot == NULL) {
+					for (int j = 0; j < 8; j++) {
+						if (elevator.Spots[j] == false) {
+							elevator.Spots[j] = true;
+							floor1_people[i].Elevator_Spot = j;
+							return;									//If something's wrong with elevator spots check here
 						}
 					}
-					if (!passengers_in_elevator()) {
-						floor1_people[i].position_x -= Traveller_Speed;
-						int k = floor1_people[i].Elevator_Spot;
-						if (floor1_people[i].position_x <= (E_spot[k]))
-							floor1_people[i].position_x = E_spot[k];
-						return;
-					}
-					else {
-						elevator.passengers.push_back(floor1_people[i]);
-						elevator.current_weight += 70;
-						floor1_people.erase(floor1_people.begin() + i);
-					}
+				}
+				if (!passengers_in_elevator()) {
+					floor1_people[i].position_x -= Traveller_Speed;
+					int k = floor1_people[i].Elevator_Spot;
+					if (floor1_people[i].position_x <= (E_spot[k]))
+						floor1_people[i].position_x = E_spot[k];
+					return;
+				}
+				else {
+					elevator.passengers.push_back(floor1_people[i]);
+					elevator.current_weight += 70;
+					floor1_people.erase(floor1_people.begin() + i);
 				}
 			}
 			break;
 		}
 	}
 
-	if (elevator.elevator_position == FLOOR1)
-		(elevator.previous_direction = UP);
-	if (elevator.elevator_position == FLOOR5)
-		(elevator.previous_direction = DOWN);
-
-	if (elevator.passengers.size() != 0)
-		elevator.direction = elevator.previous_direction;
+	if (elevator.passengers.size() != 0) {
+		elevator.direction = elevator.passengers[0].destination_direction;
+	}
+	else if (passengers_waiting()) {
+		switch (elevator.elevator_position) {
+		case FLOOR5:
+			if (floor5_people.size() != 0)
+				return;
+			elevator.direction = DOWN;
+			break;
+		case FLOOR4:
+			if (floor4_people.size() != 0)
+				return;
+			if (floor5_people.size() != 0)
+				elevator.direction = UP;
+			else
+				elevator.direction = DOWN;
+			break;
+		case FLOOR3:
+			if (floor3_people.size() != 0)
+				return;
+			if (floor5_people.size() != 0 || floor4_people.size() != 0)
+				elevator.direction = UP;
+			else
+				elevator.direction = DOWN;
+			break;
+		case FLOOR2:
+			if (floor2_people.size() != 0)
+				return;
+			if (floor1_people.size() != 0)
+				elevator.direction = DOWN;
+			else
+				elevator.direction = UP;
+			break;
+		case FLOOR1:
+			if (floor1_people.size() != 0)
+				return;
+			elevator.direction = UP;
+			break;
+		default:
+			break;
+		}
+	}
+	else
+		elevator.direction = NONE;
 
 	if (elevator.direction == UP) {				//move elevator down
 		elevator.elevator_position = TRANSIT;
 		elevator.position_y -= Elevator_Speed;
 		for (int i = 0; i < elevator.passengers.size(); i++)
-			elevator.passengers[i].position_y = elevator.position_y;			// SAME THING ON BOTH SIDES.. UNFUCK     
+			elevator.passengers[i].position_y = elevator.position_y;  
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_5 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_5 + (Elevator_Speed)) {
 			(elevator.elevator_position = FLOOR5);
-			if (elevator.passengers.size() != 0)
-				elevator.previous_direction = elevator.direction;
-			else
-				elevator.previous_direction = NONE;
-			(elevator.direction = NONE);
 		}
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_4 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_4 + (Elevator_Speed)) {
 			(elevator.elevator_position = FLOOR4);
-			if (elevator.passengers.size() != 0)
-				elevator.previous_direction = elevator.direction;
-			else
-				elevator.previous_direction = NONE;
-			(elevator.direction = NONE);
 		}
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_3 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_3 + (Elevator_Speed)) {
 			(elevator.elevator_position = FLOOR3);
-			if (elevator.passengers.size() != 0)
-				elevator.previous_direction = elevator.direction;
-			else
-				elevator.previous_direction = NONE;
-			(elevator.direction = NONE);
 		}
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_2 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_2 + (Elevator_Speed)) {
 			(elevator.elevator_position = FLOOR2);
-			if (elevator.passengers.size() != 0)
-				elevator.previous_direction = elevator.direction;
-			else
-				elevator.previous_direction = NONE;
-			(elevator.direction = NONE);
 		}
 
 	}
@@ -506,35 +522,15 @@ void elevator_control(HDC hdc) {
 			elevator.passengers[i].position_y = elevator.position_y;
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_4 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_4 + (Elevator_Speed)) {
 			(elevator.elevator_position = FLOOR4);
-			if (elevator.passengers.size() != 0)
-				elevator.previous_direction = elevator.direction;
-			else
-				elevator.previous_direction = NONE;
-			(elevator.direction = NONE);
 		}
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_3 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_3 + (Elevator_Speed)) {
 			(elevator.elevator_position = FLOOR3);
-			if (elevator.passengers.size() != 0)
-				elevator.previous_direction = elevator.direction;
-			else
-				elevator.previous_direction = NONE;
-			(elevator.direction = NONE);
 		}
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_2 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_2 + (Elevator_Speed)) {
 			(elevator.elevator_position = FLOOR2);
-			if (elevator.passengers.size() != 0)
-				elevator.previous_direction = elevator.direction;
-			else
-				elevator.previous_direction = NONE;
-			(elevator.direction = NONE);
 		}
 		if (elevator.position_y - (Elevator_Speed - 1) >= Floor_1 - (Elevator_Speed) && elevator.position_y + (Elevator_Speed - 1) <= Floor_1 + (Elevator_Speed))
 			(elevator.elevator_position = FLOOR1);
-		if (elevator.passengers.size() != 0)
-			elevator.previous_direction = elevator.direction;
-		else
-			elevator.previous_direction = NONE;
-		(elevator.direction = NONE);
 	}
 
 }
