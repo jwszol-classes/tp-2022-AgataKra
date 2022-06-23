@@ -335,6 +335,7 @@ void elevator_control(HDC hdc) {
 					elevator.passengers.push_back(floor5_people[i]);
 					elevator.current_weight += 70;
 					floor5_people.erase(floor5_people.begin() + i);
+					return;
 				}
 			}
 			break;
@@ -361,6 +362,7 @@ void elevator_control(HDC hdc) {
 						elevator.passengers.push_back(floor4_people[i]);
 						elevator.current_weight += 70;
 						floor4_people.erase(floor4_people.begin() + i);
+						return;
 					}
 				}
 
@@ -389,6 +391,7 @@ void elevator_control(HDC hdc) {
 						elevator.passengers.push_back(floor3_people[i]);
 						elevator.current_weight += 70;
 						floor3_people.erase(floor3_people.begin() + i);
+						return;
 					}
 				}
 				
@@ -417,6 +420,7 @@ void elevator_control(HDC hdc) {
 						elevator.passengers.push_back(floor2_people[i]);
 						elevator.current_weight += 70;
 						floor2_people.erase(floor2_people.begin() + i);
+						return;
 					}
 				}
 
@@ -444,6 +448,7 @@ void elevator_control(HDC hdc) {
 					elevator.passengers.push_back(floor1_people[i]);
 					elevator.current_weight += 70;
 					floor1_people.erase(floor1_people.begin() + i);
+					return;
 				}
 			}
 			break;
