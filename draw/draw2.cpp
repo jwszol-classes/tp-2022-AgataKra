@@ -18,7 +18,7 @@ const int Platform_Height = 3;
 const int Elevator_L = 310;
 const int Elevator_R = 490;
 const int Elevator_Height = 100;
-const int Traveller_Speed = 5;
+const int Traveller_Speed = 10;					//change speed back later (to 5)
 const int Elevator_Speed = 5;
 const int Spot_Width = 20;
 const int E_spot[8] = {320, 340, 360, 380, 400, 420, 440, 460};
@@ -34,6 +34,7 @@ const int L_Platform_L = 50;					//Left platform left end
 const int L_Platform_R = 300;
 const int R_Platform_L = 500;
 const int R_Platform_R = 750;
+const int ZERO = 10;
 //creating my base structures here:
 
 enum Directions { UP, DOWN, NONE };				//NONE is for when it doesnt have passengers and waits for new ones
@@ -47,7 +48,7 @@ struct Person {
 	int person_weight = 70;
 	int position_x;
 	int position_y;
-	int Elevator_Spot = NULL;
+	int Elevator_Spot = ZERO;
 };
 
 struct Elevator {
@@ -231,7 +232,7 @@ bool passengers_in_elevator() {				//this one checks if people arrived at their 
 	{
 	case FLOOR5:
 		for (int j = 0; j < floor5_people.size(); j++) {
-			if (floor5_people[j].Elevator_Spot == NULL)
+			if (floor5_people[j].Elevator_Spot == ZERO)
 				continue;
 			int k = floor5_people[j].Elevator_Spot;
 			if (floor5_people[j].position_x != E_spot[k])
@@ -240,7 +241,7 @@ bool passengers_in_elevator() {				//this one checks if people arrived at their 
 		break;
 	case FLOOR4:
 		for (int j = 0; j < floor4_people.size(); j++) {
-			if (floor4_people[j].Elevator_Spot == NULL)
+			if (floor4_people[j].Elevator_Spot == ZERO)
 				continue;
 			int k = floor4_people[j].Elevator_Spot;
 			if (floor4_people[j].position_x != E_spot[k])
@@ -249,7 +250,7 @@ bool passengers_in_elevator() {				//this one checks if people arrived at their 
 		break;
 	case FLOOR3:
 		for (int j = 0; j < floor3_people.size(); j++) {
-			if (floor3_people[j].Elevator_Spot == NULL)
+			if (floor3_people[j].Elevator_Spot == ZERO)
 				continue;
 			int k = floor3_people[j].Elevator_Spot;
 			if (floor3_people[j].position_x != E_spot[k])
@@ -258,7 +259,7 @@ bool passengers_in_elevator() {				//this one checks if people arrived at their 
 		break;
 	case FLOOR2:
 		for (int j = 0; j < floor2_people.size(); j++) {
-			if (floor2_people[j].Elevator_Spot == NULL)
+			if (floor2_people[j].Elevator_Spot == ZERO)
 				continue;
 			int k = floor2_people[j].Elevator_Spot;
 			if (floor2_people[j].position_x != E_spot[k])
@@ -267,7 +268,7 @@ bool passengers_in_elevator() {				//this one checks if people arrived at their 
 		break;
 	case FLOOR1:
 		for (int j = 0; j < floor1_people.size(); j++) {
-			if (floor1_people[j].Elevator_Spot == NULL)
+			if (floor1_people[j].Elevator_Spot == ZERO)
 				continue;
 			int k = floor1_people[j].Elevator_Spot;
 			if (floor1_people[j].position_x != E_spot[k])
@@ -315,7 +316,7 @@ void elevator_control(HDC hdc) {
 		switch (elevator.elevator_position) {
 		case FLOOR5:
 			for (int i = 0; i < floor5_people.size(); i++) {
-				if (floor5_people[i].Elevator_Spot == NULL) {
+				if (floor5_people[i].Elevator_Spot == ZERO) {
 					for (int j = 0; j < 8; j++) {
 						if (elevator.Spots[j] == false) {
 							elevator.Spots[j] = true;
@@ -342,7 +343,7 @@ void elevator_control(HDC hdc) {
 		case FLOOR4:
 			for (int i = 0; i < floor4_people.size(); i++) {
 				if (floor4_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
-					if (floor4_people[i].Elevator_Spot == NULL) {
+					if (floor4_people[i].Elevator_Spot == ZERO) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
@@ -371,7 +372,7 @@ void elevator_control(HDC hdc) {
 		case FLOOR3:
 			for (int i = 0; i < floor3_people.size(); i++) {
 				if (floor3_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
-					if (floor3_people[i].Elevator_Spot == NULL) {
+					if (floor3_people[i].Elevator_Spot == ZERO) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
@@ -400,7 +401,7 @@ void elevator_control(HDC hdc) {
 		case FLOOR2:
 			for (int i = 0; i < floor2_people.size(); i++) {
 				if (floor2_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
-					if (floor2_people[i].Elevator_Spot == NULL) {
+					if (floor2_people[i].Elevator_Spot == ZERO) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
 								elevator.Spots[j] = true;
@@ -428,7 +429,7 @@ void elevator_control(HDC hdc) {
 			break;
 		case FLOOR1:
 			for (int i = 0; i < floor1_people.size(); i++) {
-				if (floor1_people[i].Elevator_Spot == NULL) {
+				if (floor1_people[i].Elevator_Spot == ZERO) {
 					for (int j = 0; j < 8; j++) {
 						if (elevator.Spots[j] == false) {
 							elevator.Spots[j] = true;
