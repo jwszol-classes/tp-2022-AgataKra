@@ -329,21 +329,22 @@ void elevator_control(HDC hdc) {
 	}
 	if (passengers_to_enter()) {
 
-		if (elevator.door == CLOSED)
-			elevator.door = OPENING;
-		if (elevator.door == OPENING) {
-			if (elevator.Door_Height <= 0) {
-				elevator.door = OPEN;
-				return;
-			}
-			else {
-				elevator.Door_Height -= Elevator_Door_Speed;
-				return;
-			}
-		}
-
 		switch (elevator.elevator_position) {
 		case FLOOR5:
+
+			if (elevator.door == CLOSED)
+				elevator.door = OPENING;
+			if (elevator.door == OPENING) {
+				if (elevator.Door_Height <= 0) {
+					elevator.door = OPEN;
+					return;
+				}
+				else {
+					elevator.Door_Height -= Elevator_Door_Speed;
+					return;
+				}
+			}
+
 			for (int i = 0; i < floor5_people.size(); i++) {
 				if (floor5_people[i].Elevator_Spot == ZERO) {
 					for (int j = 0; j < 8; j++) {
@@ -372,6 +373,20 @@ void elevator_control(HDC hdc) {
 		case FLOOR4:
 			for (int i = 0; i < floor4_people.size(); i++) {
 				if (floor4_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
+
+					if (elevator.door == CLOSED)
+						elevator.door = OPENING;
+					if (elevator.door == OPENING) {
+						if (elevator.Door_Height <= 0) {
+							elevator.door = OPEN;
+							return;
+						}
+						else {
+							elevator.Door_Height -= Elevator_Door_Speed;
+							return;
+						}
+					}
+
 					if (floor4_people[i].Elevator_Spot == ZERO) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
@@ -401,6 +416,20 @@ void elevator_control(HDC hdc) {
 		case FLOOR3:
 			for (int i = 0; i < floor3_people.size(); i++) {
 				if (floor3_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
+
+					if (elevator.door == CLOSED)
+						elevator.door = OPENING;
+					if (elevator.door == OPENING) {
+						if (elevator.Door_Height <= 0) {
+							elevator.door = OPEN;
+							return;
+						}
+						else {
+							elevator.Door_Height -= Elevator_Door_Speed;
+							return;
+						}
+					}
+
 					if (floor3_people[i].Elevator_Spot == ZERO) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
@@ -430,6 +459,20 @@ void elevator_control(HDC hdc) {
 		case FLOOR2:
 			for (int i = 0; i < floor2_people.size(); i++) {
 				if (floor2_people[i].destination_direction == elevator.direction || elevator.direction == NONE) {
+
+					if (elevator.door == CLOSED)
+						elevator.door = OPENING;
+					if (elevator.door == OPENING) {
+						if (elevator.Door_Height <= 0) {
+							elevator.door = OPEN;
+							return;
+						}
+						else {
+							elevator.Door_Height -= Elevator_Door_Speed;
+							return;
+						}
+					}
+
 					if (floor2_people[i].Elevator_Spot == ZERO) {
 						for (int j = 0; j < 8; j++) {
 							if (elevator.Spots[j] == false) {
@@ -457,6 +500,20 @@ void elevator_control(HDC hdc) {
 			}
 			break;
 		case FLOOR1:
+
+			if (elevator.door == CLOSED)
+				elevator.door = OPENING;
+			if (elevator.door == OPENING) {
+				if (elevator.Door_Height <= 0) {
+					elevator.door = OPEN;
+					return;
+				}
+				else {
+					elevator.Door_Height -= Elevator_Door_Speed;
+					return;
+				}
+			}
+
 			for (int i = 0; i < floor1_people.size(); i++) {
 				if (floor1_people[i].Elevator_Spot == ZERO) {
 					for (int j = 0; j < 8; j++) {
@@ -485,18 +542,22 @@ void elevator_control(HDC hdc) {
 		}
 	}
 
-	if (elevator.door == OPEN)
-		elevator.door = CLOSING;
-	if (elevator.door == CLOSING) {
-		if (elevator.Door_Height <= 0) {
-			elevator.door = CLOSED;
-			return;
-		}
-		else {
-			elevator.Door_Height += Elevator_Door_Speed;
-			return;
+	if (!passengers_to_depart()) {
+		if (elevator.door == OPEN)
+			elevator.door = CLOSING;
+		if (elevator.door == CLOSING) {
+			if (elevator.Door_Height >= 100) {
+				elevator.door = CLOSED;
+				return;
+			}
+			else {
+				elevator.Door_Height += Elevator_Door_Speed;
+				return;
+			}
 		}
 	}
+	else
+		return;
 
 	if (elevator.passengers.size() != 0) {
 		elevator.direction = elevator.passengers[0].destination_direction;
