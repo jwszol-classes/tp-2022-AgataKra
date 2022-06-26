@@ -645,14 +645,16 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 
 	else if (elevator.door == OPENING || elevator.door == CLOSING) {
 		if (elevator.elevator_position == FLOOR1 || elevator.elevator_position == FLOOR3 || elevator.elevator_position == FLOOR5) {
-			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_L, elevator.position_y - Elevator_Height + elevator.Door_Height);
-			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height);
-			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_R, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height + elevator.Door_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_L, elevator.position_y); //left
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height); //top
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);  //bottom
 		}
 		else if (elevator.elevator_position == FLOOR2 || elevator.elevator_position == FLOOR4) {
-			imageGraphics->DrawLine(&Static_Pen, Elevator_R, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height + elevator.Door_Height);
-			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height);
-			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_L, elevator.position_y - Elevator_Height + elevator.Door_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_R, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y); //right
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height); //top
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);  //bottom
 		}
 	}
 	
