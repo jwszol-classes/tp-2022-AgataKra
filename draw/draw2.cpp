@@ -86,73 +86,14 @@ HWND hwndButton;
 RECT Elevator_Shaft = { L_Platform_R, E_Endings, R_Platform_L, 5 * Elevator_Height + 2 * E_Endings };				//elevator animation area
 RECT StaticDrawArea = { 50, 0, 750, 1500 };
 
-/*Im might try to fix bitmaps but this is hell
-Bitmap* person_dest1 = new Bitmap(20, 50, PixelFormat32bppARGB);
-Bitmap* person_dest2 = new Bitmap(20, 50, PixelFormat32bppARGB);
-Bitmap* person_dest3 = new Bitmap(20, 50, PixelFormat32bppARGB);
-Bitmap* person_dest4 = new Bitmap(20, 50, PixelFormat32bppARGB);
-Bitmap* person_dest5 = new Bitmap(20, 50, PixelFormat32bppARGB);
-*/
+
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Buttons(HWND, UINT, WPARAM, LPARAM);
-/*
-void InitializeSilhouettes(HWND hWnd, Bitmap* one, Bitmap* two, Bitmap* three, Bitmap* four, Bitmap* five) {
-	HDC hdcbuf = CreateCompatibleDC(NULL);
-	PAINTSTRUCT ps;
-	hdcbuf = BeginPaint(hWnd, &ps);
 
-	Pen Static_Pen(Color(255, 0, 0, 255), 2);
-	Graphics* imageGraphics1 = Graphics::FromImage(one);
-	imageGraphics1->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
-	imageGraphics1->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
-	imageGraphics1->DrawLine(&Static_Pen, 5, 25, 5, 45);
-	delete imageGraphics1;
-
-	Graphics* imageGraphics2 = Graphics::FromImage(two);
-	imageGraphics2->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
-	imageGraphics2->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
-	imageGraphics2->DrawLine(&Static_Pen, 5, 25, 15, 25);
-	imageGraphics2->DrawLine(&Static_Pen, 15, 25, 15, 35);
-	imageGraphics2->DrawLine(&Static_Pen, 15, 35, 5, 35);
-	imageGraphics2->DrawLine(&Static_Pen, 5, 35, 5, 45);
-	imageGraphics2->DrawLine(&Static_Pen, 5, 45, 15, 45);
-	delete imageGraphics2;
-
-	Graphics* imageGraphics3 = Graphics::FromImage(three);
-	imageGraphics3->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
-	imageGraphics3->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
-	imageGraphics3->DrawLine(&Static_Pen, 5, 25, 15, 25);
-	imageGraphics3->DrawLine(&Static_Pen, 15, 25, 15, 45);
-	imageGraphics3->DrawLine(&Static_Pen, 5, 35, 15, 35);
-	imageGraphics3->DrawLine(&Static_Pen, 5, 45, 15, 45);
-	delete imageGraphics3;
-
-	Graphics* imageGraphics4 = Graphics::FromImage(four);
-	imageGraphics4->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
-	imageGraphics4->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
-	imageGraphics4->DrawLine(&Static_Pen, 5, 25, 5, 35);
-	imageGraphics4->DrawLine(&Static_Pen, 5, 35, 15, 35);
-	imageGraphics4->DrawLine(&Static_Pen, 15, 25, 15, 45);
-	delete imageGraphics4;
-
-	Graphics* imageGraphics5 = Graphics::FromImage(five);
-	imageGraphics5->DrawEllipse(&Static_Pen, 0, 0, 20, 20);
-	imageGraphics5->DrawRectangle(&Static_Pen, 0, 20, 20, 30);
-	imageGraphics5->DrawLine(&Static_Pen, 5, 25, 15, 25);
-	imageGraphics5->DrawLine(&Static_Pen, 5, 25, 5, 35);
-	imageGraphics5->DrawLine(&Static_Pen, 5, 35, 15, 35);
-	imageGraphics5->DrawLine(&Static_Pen, 15, 35, 15, 45);
-	imageGraphics5->DrawLine(&Static_Pen, 5, 45, 15, 45);
-	delete imageGraphics5;
-
-
-	EndPaint(hWnd, &ps);
-}
-*/
 
 bool passengers_waiting() {
 	if (floor1_people.size() != 0 || floor2_people.size() != 0 || floor3_people.size() != 0 || floor4_people.size() != 0 || floor5_people.size() != 0)
@@ -719,9 +660,6 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 		}
 	}
 	
-	//elevator.position_y -= 2;	//this is just for testing 
-
-	
 	for (int i = 0; i < floor1_people.size(); i++) {
 		if (floor1_people[i].destination == FLOOR2)
 			imageGraphics->FillRectangle(&S_Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 18, 50);
@@ -799,10 +737,6 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 	imageGraphics->DrawString(current_weight, -1, &font, pointG, &solidBrush);
 	
 	graphics.DrawImage(bmp, 0, 0);
-
-	//this method also slow
-	//TextureBrush* myBrush = new TextureBrush(bmp);
-	//graphics.FillRectangle(myBrush, 0, 0, 1500, 1500);
 
 	EndPaint(hWnd, &ps);
 
@@ -1166,7 +1100,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	Person traveller;
 
-	//InitializeSilhouettes(hWnd, person_dest1, person_dest2, person_dest3, person_dest4, person_dest5);
 
 	switch (message)
 	{
@@ -1358,17 +1291,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_PAINT:
-		// TODO: Add any drawing code here (not depend on timer, buttons)
 
-		//StaticPaint(hWnd, hdc, ps, &StaticDrawArea);
 		repaintWindow(hWnd, hdc, ps, &StaticDrawArea);
 		break;
 	case WM_DESTROY:
-		//delete person_dest1;
-		//delete person_dest2;
-		//delete person_dest3;
-		//delete person_dest4;
-		//delete person_dest5;
+
 		PostQuitMessage(0);
 		break;
 
