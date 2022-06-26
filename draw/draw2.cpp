@@ -20,6 +20,7 @@ const int Elevator_R = 490;
 const int Elevator_Height = 100;
 const int Traveller_Speed = 5;
 const int Elevator_Speed = 5;
+const int Elevator_Door_Speed = 5;
 const int Spot_Width = 20;
 const int E_spot[8] = {320, 340, 360, 380, 400, 420, 440, 460};
 const int Number_Of_Floors = 5;
@@ -292,6 +293,20 @@ bool passengers_at_destination() {			//this one checks if people arrived at thei
 
 void elevator_control(HDC hdc) {
 	if (passengers_to_depart()) {
+
+		if (elevator.door == CLOSED)
+			elevator.door = OPENING;
+		if (elevator.door == OPENING) {
+			if (elevator.Door_Height <= 0) {
+				elevator.door = OPEN;
+				return;
+			}
+			else {
+				elevator.Door_Height -= Elevator_Door_Speed;
+				return;
+			}
+		}
+
 		for (int i = 0; i < elevator.passengers.size();) {
 			if (elevator.passengers[i].destination == elevator.elevator_position) {
 				if (elevator.elevator_position == FLOOR5 || elevator.elevator_position == FLOOR3 || elevator.elevator_position == FLOOR1)
@@ -313,6 +328,20 @@ void elevator_control(HDC hdc) {
 		}
 	}
 	if (passengers_to_enter()) {
+
+		if (elevator.door == CLOSED)
+			elevator.door = OPENING;
+		if (elevator.door == OPENING) {
+			if (elevator.Door_Height <= 0) {
+				elevator.door = OPEN;
+				return;
+			}
+			else {
+				elevator.Door_Height -= Elevator_Door_Speed;
+				return;
+			}
+		}
+
 		switch (elevator.elevator_position) {
 		case FLOOR5:
 			for (int i = 0; i < floor5_people.size(); i++) {
@@ -453,6 +482,19 @@ void elevator_control(HDC hdc) {
 				}
 			}
 			break;
+		}
+	}
+
+	if (elevator.door == OPEN)
+		elevator.door = CLOSING;
+	if (elevator.door == CLOSING) {
+		if (elevator.Door_Height <= 0) {
+			elevator.door = CLOSED;
+			return;
+		}
+		else {
+			elevator.Door_Height += Elevator_Door_Speed;
+			return;
 		}
 	}
 
