@@ -61,7 +61,7 @@ struct Elevator {
 	Position elevator_position = FLOOR1;
 	int position_y = Floor_1;
 	bool Spots[8] = {false, false , false , false , false , false , false , false};
-
+	int Door_Height = 100;
 };
 
 Elevator elevator;
@@ -554,106 +554,130 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 	
 	Graphics* imageGraphics = Graphics::FromImage(bmp);
 	Pen Static_Pen(Color(255, 0, 0, 255), 3);
+
+	Pen Pen1(Color(255, 255, 0, 255), 3);				//RGB
+	Pen Pen2(Color(255, 0, 255, 255), 3);
+	Pen Pen3(Color(255, 255, 255, 0), 3);
+	Pen Pen4(Color(255, 255, 0, 0), 3);
+	Pen Pen5(Color(255, 0, 255, 0), 3);
 	
-	SolidBrush Pen1(Color(255, 255, 0, 255));				//RGB
-	SolidBrush Pen2(Color(255, 0, 255, 255));
-	SolidBrush Pen3(Color(255, 255, 255, 0));
-	SolidBrush Pen4(Color(255, 255, 0, 0));
-	SolidBrush Pen5(Color(255, 0, 255, 0));
+	SolidBrush S_Pen1(Color(255, 255, 0, 255));				//RGB
+	SolidBrush S_Pen2(Color(255, 0, 255, 255));
+	SolidBrush S_Pen3(Color(255, 255, 255, 0));
+	SolidBrush S_Pen4(Color(255, 255, 0, 0));
+	SolidBrush S_Pen5(Color(255, 0, 255, 0));
 	
 	//draw everything to image graphics
+	imageGraphics->DrawLine(&Static_Pen, L_Platform_R, E_Endings / 2, R_Platform_L, E_Endings / 2);
+	imageGraphics->DrawLine(&Static_Pen, L_Platform_R, E_Endings / 2 - 1, L_Platform_R, Floor_4 - Elevator_Height);
+	imageGraphics->DrawLine(&Static_Pen, R_Platform_L, E_Endings / 2 - 1, R_Platform_L, E_Endings);
+	imageGraphics->DrawLine(&Static_Pen, L_Platform_R, Floor_4, L_Platform_R, Floor_2 - Elevator_Height);
+	imageGraphics->DrawLine(&Static_Pen, L_Platform_R, Floor_2, L_Platform_R, Floor_2 + Elevator_Height + E_Endings);
+	imageGraphics->DrawLine(&Static_Pen, R_Platform_L, Floor_5, R_Platform_L, Floor_3 - Elevator_Height);
+	imageGraphics->DrawLine(&Static_Pen, R_Platform_L, Floor_3, R_Platform_L, Floor_1 - Elevator_Height);
+	imageGraphics->DrawLine(&Static_Pen, R_Platform_L, Floor_1,  R_Platform_L, Floor_1 + E_Endings);
+	imageGraphics->DrawLine(&Static_Pen, L_Platform_R, Floor_1 + E_Endings - 2, R_Platform_L, Floor_1 + E_Endings - 2);
+
+	imageGraphics->DrawLine(&Pen1, R_Platform_L, Floor_1, R_Platform_R, Floor_1);
+	imageGraphics->DrawLine(&Pen2, L_Platform_L, Floor_2, L_Platform_R, Floor_2);
+	imageGraphics->DrawLine(&Pen3, R_Platform_L, Floor_3, R_Platform_R, Floor_3);
+	imageGraphics->DrawLine(&Pen4, L_Platform_L, Floor_4, L_Platform_R, Floor_4);
+	imageGraphics->DrawLine(&Pen5, R_Platform_L, Floor_5, R_Platform_R, Floor_5);
+	//here is the door functions
 	
-	for (int i = 0; i <= Number_Of_Floors; i++) {
+	if (elevator.door == CLOSED)
+		imageGraphics->DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
 
-		if (i % 2 == 0) //Left Side of the elevator
-
-			if (i == 0) {			//upper end and floor
-				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, E_Endings / 2, L_Platform_R - 2, Floor_5);
-				imageGraphics->DrawLine(&Static_Pen, R_Platform_L - 2, (E_Endings / 2), R_Platform_L - 2, E_Endings);
-				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (E_Endings / 2) - 1, R_Platform_L, (E_Endings / 2) - 1);
-			}
-			else {
-				imageGraphics->DrawLine(&Static_Pen, L_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, L_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
-				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, ((i - 1) * Elevator_Height + Floor_5), L_Platform_R - 2, i * Elevator_Height + Floor_5);
-			}
-		else
-
-			if (i == 5) {
-				imageGraphics->DrawLine(&Static_Pen, R_Platform_L, ((i - 1) * Elevator_Height + Floor_5) - 1, R_Platform_R, ((i - 1) * Elevator_Height + Floor_5) - 1);
-				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - 2, i * Elevator_Height + E_Endings, L_Platform_R - 2, i * Elevator_Height + 2 * E_Endings);
-				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_L + 1, (i * Elevator_Height + 2 * E_Endings));
-				imageGraphics->DrawLine(&Static_Pen, L_Platform_R - Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1, R_Platform_L + Platform_Height, (i * Elevator_Height + 2 * E_Endings) + 1);
-			}
-			else {
-				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 1, (i * Elevator_Height + E_Endings), R_Platform_R, (i * Elevator_Height + E_Endings));
-				imageGraphics->DrawLine(&Static_Pen, R_Platform_L + 2, (i * Elevator_Height + E_Endings) + 1, R_Platform_L + 2, ((i + 1) * Elevator_Height + E_Endings));
-			}
+	else if (elevator.door == OPEN) {
+		if (elevator.elevator_position == FLOOR1 || elevator.elevator_position == FLOOR3 || elevator.elevator_position == FLOOR5) {
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_L, elevator.position_y);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);
+		}
+		else if (elevator.elevator_position == FLOOR2 || elevator.elevator_position == FLOOR4) {
+			imageGraphics->DrawLine(&Static_Pen, Elevator_R, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);
+		}
 	}
-	imageGraphics->DrawRectangle(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R - Elevator_L, Elevator_Height);
+
+	else if (elevator.door == OPENING || elevator.door == CLOSING) {
+		if (elevator.elevator_position == FLOOR1 || elevator.elevator_position == FLOOR3 || elevator.elevator_position == FLOOR5) {
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_L, elevator.position_y - Elevator_Height + elevator.Door_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);
+		}
+		else if (elevator.elevator_position == FLOOR2 || elevator.elevator_position == FLOOR4) {
+			imageGraphics->DrawLine(&Static_Pen, Elevator_R, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height + elevator.Door_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y - Elevator_Height, Elevator_R, elevator.position_y - Elevator_Height);
+			imageGraphics->DrawLine(&Static_Pen, Elevator_L, elevator.position_y, Elevator_R, elevator.position_y);
+		}
+	}
+	
 	//elevator.position_y -= 2;	//this is just for testing 
 
 	
 	for (int i = 0; i < floor1_people.size(); i++) {
 		if (floor1_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen2, floor1_people[i].position_x, floor1_people[i].position_y - 50, 18, 50);
 		else if (floor1_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen3, floor1_people[i].position_x, floor1_people[i].position_y - 50, 18, 50);
 		else if (floor1_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen4, floor1_people[i].position_x, floor1_people[i].position_y - 50, 18, 50);
 		else if (floor1_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen5, floor1_people[i].position_x, floor1_people[i].position_y - 50, 18, 50);
 	}
 	for (int i = 0; i < floor2_people.size(); i++) {
 		if (floor2_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen1, floor2_people[i].position_x, floor2_people[i].position_y - 50, 18, 50);
 		else if (floor2_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen3, floor2_people[i].position_x, floor2_people[i].position_y - 50, 18, 50);
 		else if (floor2_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen4, floor2_people[i].position_x, floor2_people[i].position_y - 50, 18, 50);
 		else if (floor2_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor2_people[i].position_x, floor2_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen5, floor2_people[i].position_x, floor2_people[i].position_y - 50, 18, 50);
 	}
 	for (int i = 0; i < floor3_people.size(); i++) {
 		if (floor3_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen1, floor3_people[i].position_x, floor3_people[i].position_y - 50, 18, 50);
 		else if (floor3_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen2, floor3_people[i].position_x, floor3_people[i].position_y - 50, 18, 50);
 		else if (floor3_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen4, floor3_people[i].position_x, floor3_people[i].position_y - 50, 18, 50);
 		else if (floor3_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor3_people[i].position_x, floor3_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen5, floor3_people[i].position_x, floor3_people[i].position_y - 50, 18, 50);
 	}
 	for (int i = 0; i < floor4_people.size(); i++) {
 		if (floor4_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen1, floor4_people[i].position_x, floor4_people[i].position_y - 50, 18, 50);
 		else if (floor4_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen2, floor4_people[i].position_x, floor4_people[i].position_y - 50, 18, 50);
 		else if (floor4_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen3, floor4_people[i].position_x, floor4_people[i].position_y - 50, 18, 50);
 		else if (floor4_people[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, floor4_people[i].position_x, floor4_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen5, floor4_people[i].position_x, floor4_people[i].position_y - 50, 18, 50);
 	}
 	for (int i = 0; i < floor5_people.size(); i++) {
 		if (floor5_people[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen1, floor5_people[i].position_x, floor5_people[i].position_y - 50, 18, 50);
 		else if (floor5_people[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen2, floor5_people[i].position_x, floor5_people[i].position_y - 50, 18, 50);
 		else if (floor5_people[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen3, floor5_people[i].position_x, floor5_people[i].position_y - 50, 18, 50);
 		else if (floor5_people[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, floor5_people[i].position_x, floor5_people[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen4, floor5_people[i].position_x, floor5_people[i].position_y - 50, 18, 50);
 	}
 	for (int i = 0; i < elevator.passengers.size(); i++) {
 		if (elevator.passengers[i].destination == FLOOR1)
-			imageGraphics->FillRectangle(&Pen1, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen1, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 18, 50);
 		else if (elevator.passengers[i].destination == FLOOR2)
-			imageGraphics->FillRectangle(&Pen2, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen2, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 18, 50);
 		else if (elevator.passengers[i].destination == FLOOR3)
-			imageGraphics->FillRectangle(&Pen3, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen3, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 18, 50);
 		else if (elevator.passengers[i].destination == FLOOR4)
-			imageGraphics->FillRectangle(&Pen4, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen4, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 18, 50);
 		else if (elevator.passengers[i].destination == FLOOR5)
-			imageGraphics->FillRectangle(&Pen5, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 20, 50);
+			imageGraphics->FillRectangle(&S_Pen5, elevator.passengers[i].position_x, elevator.passengers[i].position_y - 50, 18, 50);
 	}
 	
 	FontFamily   fontFamily(L"Arial");
