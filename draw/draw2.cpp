@@ -506,37 +506,47 @@ void elevator_control(HDC hdc) {
 	else if (passengers_waiting()) {
 		switch (elevator.elevator_position) {
 		case FLOOR5:
-			if (floor5_people.size() != 0)
+			if (floor5_people.size() != 0) {
+				elevator.direction = NONE;
 				return;
+			}
 			elevator.direction = DOWN;
 			break;
 		case FLOOR4:
-			if (floor4_people.size() != 0)
+			if (floor4_people.size() != 0) {
+				elevator.direction = NONE;
 				return;
+			}
 			if (floor5_people.size() != 0)
 				elevator.direction = UP;
 			else
 				elevator.direction = DOWN;
 			break;
 		case FLOOR3:
-			if (floor3_people.size() != 0)
+			if (floor3_people.size() != 0) {
+				elevator.direction = NONE;
 				return;
+			}
 			if (floor5_people.size() != 0 || floor4_people.size() != 0)
 				elevator.direction = UP;
 			else
 				elevator.direction = DOWN;
 			break;
 		case FLOOR2:
-			if (floor2_people.size() != 0)
+			if (floor2_people.size() != 0) {
+				elevator.direction = NONE;
 				return;
+			}
 			if (floor1_people.size() != 0)
 				elevator.direction = DOWN;
 			else
 				elevator.direction = UP;
 			break;
 		case FLOOR1:
-			if (floor1_people.size() != 0)
+			if (floor1_people.size() != 0) {
+				elevator.direction = NONE;
 				return;
+			}
 			elevator.direction = UP;
 			break;
 		default:
