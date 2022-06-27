@@ -605,12 +605,15 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps, RECT* Static_Area)
 	Pen Pen4(Color(255, 255, 0, 0), 3);
 	Pen Pen5(Color(255, 0, 255, 0), 3);
 	
+	SolidBrush S_Pen(Color(255, 255, 255, 255));
 	SolidBrush S_Pen1(Color(255, 255, 0, 255));				//RGB
 	SolidBrush S_Pen2(Color(255, 0, 255, 255));
 	SolidBrush S_Pen3(Color(255, 255, 255, 0));
 	SolidBrush S_Pen4(Color(255, 255, 0, 0));
 	SolidBrush S_Pen5(Color(255, 0, 255, 0));
 	
+
+	imageGraphics->FillRectangle(&S_Pen, 0, 0, 1500, 1500);
 	//draw everything to image graphics
 	imageGraphics->DrawLine(&Static_Pen, L_Platform_R, E_Endings / 2, R_Platform_L, E_Endings / 2);
 	imageGraphics->DrawLine(&Static_Pen, L_Platform_R, E_Endings / 2 - 1, L_Platform_R, Floor_4 - Elevator_Height);
@@ -1304,7 +1307,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case TMR_1:
 			//force window to repaint
-			InvalidateRect(hWnd, &StaticDrawArea, TRUE);
+			InvalidateRect(hWnd, &StaticDrawArea, FALSE);
 			break;
 		}
 
